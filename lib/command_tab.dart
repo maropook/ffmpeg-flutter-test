@@ -54,6 +54,8 @@ class CommandTab {
 
   void appendLog(String logMessage) {
     _outputText += logMessage;
+    // ignore: avoid_print
+    print(logMessage);
   }
 
   void clearLog() {

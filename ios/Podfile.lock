@@ -1,12 +1,12 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_ffmpeg/min-lts (0.4.2):
+  - flutter_ffmpeg/full-gpl-lts (0.4.2):
     - Flutter
-    - mobile-ffmpeg-min (= 4.4.LTS)
+    - mobile-ffmpeg-full-gpl (= 4.4.LTS)
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - mobile-ffmpeg-min (4.4.LTS)
+  - mobile-ffmpeg-full-gpl (4.4.LTS)
   - path_provider (0.0.1):
     - Flutter
   - Toast (4.0.0)
@@ -15,14 +15,14 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_ffmpeg/min-lts (from `.symlinks/plugins/flutter_ffmpeg/ios`)
+  - flutter_ffmpeg/full-gpl-lts (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
 
 SPEC REPOS:
   trunk:
-    - mobile-ffmpeg-min
+    - mobile-ffmpeg-full-gpl
     - Toast
 
 EXTERNAL SOURCES:
@@ -41,11 +41,11 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_ffmpeg: 3ec3912c74649851e6c3b1885511eef78142ac4f
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
-  mobile-ffmpeg-min: dd2fd38da2788ccb7be5720fc308cb69160820e7
+  mobile-ffmpeg-full-gpl: 9d7a8ec95457e39f9c1efe14b848f41798efa684
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
 
-PODFILE CHECKSUM: 7d6ac3e71397efd2f7d1fc77df5b3227e7987fad
+PODFILE CHECKSUM: 21fa3fb9643fd64c8c628d143f379cd8982dde86
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
