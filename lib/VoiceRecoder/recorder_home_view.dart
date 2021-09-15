@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ffmpeg_flutter_test/views/recorded_list_view.dart';
-import 'package:ffmpeg_flutter_test/views/recorder_view.dart';
+import 'package:ffmpeg_flutter_test/VoiceRecoder/recorded_list_view.dart';
+import 'package:ffmpeg_flutter_test/VoiceRecoder/recorder_view.dart';
 
 class RecorderHomeView extends StatefulWidget {
   @override

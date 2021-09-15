@@ -4,9 +4,9 @@ import 'package:ffmpeg_flutter_test/BookManagement/view/ui.dart';
 import 'package:ffmpeg_flutter_test/Camera/camera_app.dart';
 import 'package:ffmpeg_flutter_test/SpeechToText/speech_app.dart';
 import 'package:ffmpeg_flutter_test/Video/video_app.dart';
+import 'package:ffmpeg_flutter_test/VoiceRecoder/recorder_home_view.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
-import 'package:ffmpeg_flutter_test/views/recorder_home_view.dart';
 import 'package:flutter/material.dart';
 import 'Camera/camera_example_home.dart';
 import 'ffmpeg/ui.dart';
@@ -51,8 +51,7 @@ class Top extends StatelessWidget {
           children: [
             SizedBox(height: 8),
             ElevatedButton(
-              child: Text(
-                  'ffmpeg 公式サンプル/flutter_ffmpeg'), //localのdjangoで作ったapiと通信する
+              child: Text('ffmpeg 公式サンプル/flutter_ffmpeg'), //chromeでbuildしても動かない
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => MainffmpegPage()));
@@ -64,14 +63,6 @@ class Top extends StatelessWidget {
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => TopPage()));
-              },
-            ),
-            SizedBox(height: 8),
-            ElevatedButton(
-              child: Text('カメラ(写真が撮れるだけ)/camera'), //写真が撮れる．実機で動かさないといけない
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CameraAppSmall()));
               },
             ),
             SizedBox(height: 8),
@@ -97,6 +88,27 @@ class Top extends StatelessWidget {
             ),
             SizedBox(height: 8),
             ElevatedButton(
+              child: Text('録音・再生/audio_recoder_2'), //録音と再生ができる．
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RecorderHomeView()));
+              },
+            ),
+            SizedBox(height: 8),
+            Divider(),
+            Text('以下実機ビルド必須'),
+            SizedBox(height: 8),
+            ElevatedButton(
+              child: Text('カメラ(写真が撮れるだけ)/camera'), //写真が撮れる．実機で動かさないといけない
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CameraAppSmall()));
+              },
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
               child: Text(
                   '公式カメラ，動画撮影,/camera,video_player'), //写真も動画も撮れる．実機で動かさないといけない.cameraの公式のただのsample
               onPressed: () {
@@ -104,16 +116,6 @@ class Top extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => CameraExampleHome()));
-              },
-            ),
-            SizedBox(height: 8),
-            ElevatedButton(
-              child: Text('録音・再生/audio_recoder_2'), //録音と再生ができる．
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RecorderHomeView()));
               },
             ),
           ],
