@@ -1,49 +1,89 @@
 PODS:
+  - audioplayers (0.0.1):
+    - Flutter
+  - camera (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
+  - flutter_audio_recorder2 (0.0.1):
+    - Flutter
   - flutter_ffmpeg/full-gpl-lts (0.4.2):
     - Flutter
     - mobile-ffmpeg-full-gpl (= 4.4.LTS)
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
+  - geocoding (1.0.5):
+    - Flutter
+  - image_picker (0.0.1):
+    - Flutter
   - mobile-ffmpeg-full-gpl (4.4.LTS)
   - path_provider (0.0.1):
     - Flutter
+  - speech_to_text (0.0.1):
+    - Flutter
+    - Try
   - Toast (4.0.0)
+  - Try (2.1.1)
   - video_player (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
+  - camera (from `.symlinks/plugins/camera/ios`)
   - Flutter (from `Flutter`)
+  - flutter_audio_recorder2 (from `.symlinks/plugins/flutter_audio_recorder2/ios`)
   - flutter_ffmpeg/full-gpl-lts (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - geocoding (from `.symlinks/plugins/geocoding/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - speech_to_text (from `.symlinks/plugins/speech_to_text/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
 
 SPEC REPOS:
   trunk:
     - mobile-ffmpeg-full-gpl
     - Toast
+    - Try
 
 EXTERNAL SOURCES:
+  audioplayers:
+    :path: ".symlinks/plugins/audioplayers/ios"
+  camera:
+    :path: ".symlinks/plugins/camera/ios"
   Flutter:
     :path: Flutter
+  flutter_audio_recorder2:
+    :path: ".symlinks/plugins/flutter_audio_recorder2/ios"
   flutter_ffmpeg:
     :path: ".symlinks/plugins/flutter_ffmpeg/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  geocoding:
+    :path: ".symlinks/plugins/geocoding/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  speech_to_text:
+    :path: ".symlinks/plugins/speech_to_text/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
 
 SPEC CHECKSUMS:
+  audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
+  camera: b9eb73c055259c6f808a9da4a0d43780f6645281
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_audio_recorder2: 0eda9d0c791d9d093e6f5f07df414d34edec4eda
   flutter_ffmpeg: 3ec3912c74649851e6c3b1885511eef78142ac4f
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
+  geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
+  image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
   mobile-ffmpeg-full-gpl: 9d7a8ec95457e39f9c1efe14b848f41798efa684
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  speech_to_text: b43a7d99aef037bd758ed8e45d79bbac035d2dfe
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  Try: 5ef669ae832617b3cee58cb2c6f99fb767a4ff96
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
 
 PODFILE CHECKSUM: 21fa3fb9643fd64c8c628d143f379cd8982dde86
