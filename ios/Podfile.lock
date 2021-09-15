@@ -26,6 +26,8 @@ PODS:
   - Try (2.1.1)
   - video_player (0.0.1):
     - Flutter
+  - wakelock (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
@@ -39,6 +41,7 @@ DEPENDENCIES:
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - speech_to_text (from `.symlinks/plugins/speech_to_text/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
 SPEC REPOS:
   trunk:
@@ -69,6 +72,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/speech_to_text/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
 
 SPEC CHECKSUMS:
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
@@ -85,6 +90,7 @@ SPEC CHECKSUMS:
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   Try: 5ef669ae832617b3cee58cb2c6f99fb767a4ff96
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
 
 PODFILE CHECKSUM: 21fa3fb9643fd64c8c628d143f379cd8982dde86
 
