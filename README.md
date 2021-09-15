@@ -1,4 +1,8 @@
-# ffmpeg_flutter_test
+## ffmpeg_flutter_test
+
+__開発環境__
+  
+* OS: `macOS Big Sur v11.5.2`
 
 ```shell
 
@@ -71,6 +75,50 @@ flutter build ios
 
 ios 14以上ではできないと思ったがreleaseにしたらいける
 
+pod install --repo-update
+
+ffmpeg使用
+
+xcodeでframeworkのiosのversionを9.3以上にしておく
+any simulator sdk をarm64にしておく
+
+Podfileに以下を追記
+
+```
+
+def flutter_install_plugin_pods(application_path = nil, relative_symlink_dir, platform)
+
+  application_path ||= File.dirname(defined_in_file.realpath) if self.respond_to?(:defined_in_file)
+  raise 'Could not find application path' unless application_path
+
+  symlink_dir = File.expand_path(relative_symlink_dir, application_path)
+  system('rm', '-rf', symlink_dir) # Avoid the complication of dependencies like FileUtils.
+
+  symlink_plugins_dir = File.expand_path('plugins', symlink_dir)
+  system('mkdir', '-p', symlink_plugins_dir)
+
+  plugins_file = File.join(application_path, '..', '.flutter-plugins-dependencies')
+  plugin_pods = flutter_parse_plugins_file(plugins_file, platform)
+  plugin_pods.each do |plugin_hash|
+    plugin_name = plugin_hash['name']
+    plugin_path = plugin_hash['path']
+    if (plugin_name && plugin_path)
+      symlink = File.join(symlink_plugins_dir, plugin_name)
+      File.symlink(plugin_path, symlink)
+
+      if plugin_name == 'flutter_ffmpeg'
+        pod 'flutter_ffmpeg/full-gpl-lts', :path => File.join(relative_symlink_dir, 'plugins', plugin_name, platform) #fll-gpl-tlsはffmpegの使いたい種類を追記
+      else
+        pod plugin_name, :path => File.join(relative_symlink_dir, 'plugins', plugin_name, platform)
+      end
+    end
+  end
+end
+
+```
+
+```
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
@@ -83,19 +131,24 @@ post_install do |installer|
   end
 end
 
-pod install --repo-update
-
-ffmpeg使用
-
-xcodeでframeworkのiosのversionを9.3以上にしておく
-any simulator sdk をarm64にしておく
+```
 
 release.xconfig
+
+```
+
 #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+
 #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"
 
+```
 debug.xconfig
+
+```
+
 #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+
+```
 
 xcodeのプロジェクトの名前をユニークにし,teamに自分のappleIDを追加しておく
 
