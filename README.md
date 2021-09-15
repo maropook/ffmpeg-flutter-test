@@ -1,6 +1,14 @@
 
 ## ffmpeg_flutter_test
 
+__できること__
+  
+- dio と http
+- カメラ使った動画撮影
+- ffmpeg
+- SpeechToText
+- マイク入力
+
 __開発環境__
   
 * OS: `macOS Big Sur v11.5.2`
@@ -20,10 +28,18 @@ Tools • Dart 2.15.0 (build 2.15.0-42.0.dev)
 
 ***
 
-<img width="186" alt="スクリーンショット 2021-09-15 18 41 33" src="https://user-images.githubusercontent.com/84751550/133410374-c1dc793a-f41a-45f3-8f35-1c8bf9ea6eed.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 41" src="https://user-images.githubusercontent.com/84751550/133417902-dcb88563-efbe-4835-8568-5b9f1d60501d.png"><img width="181" alt="スクリーンショット 2021-09-15 19 31 07" src="https://user-images.githubusercontent.com/84751550/133417912-889e7142-0b05-4ca0-bb0e-26a6ea6d799e.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 50" src="https://user-images.githubusercontent.com/84751550/133417916-7a71c0c6-80ad-498b-a416-b531d9dc7f9c.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 20" src="https://user-images.githubusercontent.com/84751550/133417918-53697c2b-8124-4574-86e8-a78106a85982.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 55" src="https://user-images.githubusercontent.com/84751550/133417921-f581c9b8-a816-4085-b25e-96b7c4de8e8c.png"><img width="186" alt="スクリーンショット 2021-09-15 19 36 22" src="https://user-images.githubusercontent.com/84751550/133418558-fd8d9546-d130-41ee-8725-4026b1c55419.png">
+<img width="186" alt="スクリーンショット 2021-09-15 18 41 33" src="https://user-images.githubusercontent.com/84751550/133410374-c1dc793a-f41a-45f3-8f35-1c8bf9ea6eed.png"><img width="186" alt="スクリーンショット 2021-09-15 19 36 22" src="https://user-images.githubusercontent.com/84751550/133418558-fd8d9546-d130-41ee-8725-4026b1c55419.png"><img width="186" alt="スクリーンショット 2021-09-15 19 51 40" src="https://user-images.githubusercontent.com/84751550/133420699-d61606fa-f31d-4e54-ae25-3a14199979e7.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 20" src="https://user-images.githubusercontent.com/84751550/133417918-53697c2b-8124-4574-86e8-a78106a85982.png">
+<img width="186" alt="スクリーンショット 2021-09-15 19 31 55" src="https://user-images.githubusercontent.com/84751550/133417921-f581c9b8-a816-4085-b25e-96b7c4de8e8c.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 41" src="https://user-images.githubusercontent.com/84751550/133417902-dcb88563-efbe-4835-8568-5b9f1d60501d.png"><img width="181" alt="スクリーンショット 2021-09-15 19 31 07" src="https://user-images.githubusercontent.com/84751550/133417912-889e7142-0b05-4ca0-bb0e-26a6ea6d799e.png"><img width="186" alt="スクリーンショット 2021-09-15 19 31 50" src="https://user-images.githubusercontent.com/84751550/133417916-7a71c0c6-80ad-498b-a416-b531d9dc7f9c.png">
 
+***
 
-#### ffmpeg 公式サンプル/flutter_ffmpeg'
+#### トップページ
+
+以下6つの機能が使える．一覧ページ
+
+***
+
+#### 【公式サンプル】ffmpeg /flutter_ffmpeg
 
 videoタブでencodeを押すと，assets配下にある画像3つを使って動画を作ってくれる
 
@@ -53,6 +69,7 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 録音と再生ができる
 
+
 ***
 
 ## 以下実機ビルド必須!
@@ -63,7 +80,7 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 ***
 
-#### 公式カメラ，動画撮影,/camera,video_player
+#### 【公式サンプル】カメラ，動画撮影/camera,video_player
 
 写真と動画が撮れる．フラッシュなど色々オプション付き
 
@@ -71,6 +88,30 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 
 
+## plugin
+
+### flutter_audio_recorder
+
+__依存関係__
+
+flutter_audio_recorder
+
+audio_players
+
+path_provider
+
+
+__改善が必要__
+
+時間内に記録する視覚的進歩
+
+録音ボタンへのオーディオピッチアニメーション
+
+別のタイルをテープで貼り付けるときは、他の拡張タイルを閉じる必要がある
+
+オーディオの一時停止および再開機能
+
+***
 
 ## エラーメモ
 実機ビルド　❯❯
@@ -83,6 +124,7 @@ pod install --repo-update
 ffmpeg使用
 
 xcodeでframeworkのiosのversionを9.3以上にしておく
+
 any simulator sdk をarm64にしておく
 
 Podfileに以下を追記
