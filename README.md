@@ -80,12 +80,18 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 - imagepicker
 - provider
+- camera
 
 ***
 
 #### 【公式サンプル】カメラ，動画撮影/camera,video_player
 
 写真と動画が撮れる．フラッシュなど色々オプション付き
+
+- imagepicker
+- provider
+- chewie
+- video_player
 
 ***
 
