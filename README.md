@@ -41,9 +41,21 @@ Tools • Dart 2.15.0 (build 2.15.0-42.0.dev)
 
 #### 【公式サンプル】ffmpeg /flutter_ffmpeg
 
+
 videoタブでencodeを押すと，assets配下にある画像3つを使って動画を作ってくれる
 
 SUBTITLEタブではassets配下にあるフォントと字幕をstrファイルを合成して字幕付き動画を作ってくれる
+
+- flutter_ffmpeg
+- video_player_web
+- audioplayers
+- fluttertoast
+- iamge_picker_for_web
+- speech_to_text
+- path_provider
+- path
+
+
 
 ***
 
@@ -51,17 +63,32 @@ SUBTITLEタブではassets配下にあるフォントと字幕をstrファイル
 
 djangoで作った本の情報を管理する自作apiと通信できる
 
+- provider
+- flutter_slidable
+- dio
+- http
+- geocoding
+
+
 ***
 
 #### speechtotext/speech_to_text
 
 しゃべったことをテキストにしてくれる
 
+- pavatar_glow
+- highlight_text
+- speech_to_text
+
 ***
 
 #### 録音・再生/audio_recoder_2
 
 録音と再生ができる
+
+- flutter_audio_recoder2
+- audioplayers
+- path_provider
 
 
 ***
@@ -72,6 +99,9 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 撮った写真，アルバム内の写真を選択し，表示させることができる
 
+- imagepicker
+- provider
+
 ***
 
 #### 動画再生する,録画する/video_player
@@ -81,6 +111,8 @@ djangoで作った本の情報を管理する自作apiと通信できる
 - imagepicker
 - provider
 - camera
+- path
+- path_provider
 
 ***
 
@@ -88,10 +120,8 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 写真と動画が撮れる．フラッシュなど色々オプション付き
 
-- imagepicker
-- provider
-- chewie
 - video_player
+- camera
 
 ***
 
@@ -99,16 +129,13 @@ djangoで作った本の情報を管理する自作apiと通信できる
 
 ## plugin
 
-### flutter_audio_recorder
+### flutter_audio_recorderについて
 
 __依存関係__
 
-flutter_audio_recorder
-
-audio_players
-
-path_provider
-
+- flutter_audio_recorder
+- audio_players
+- path_provider
 
 __改善が必要__
 
