@@ -109,7 +109,9 @@ class SubtitleTab implements PlayerTab {
                         "Create completed successfully; burning subtitles.");
 
                     String burnSubtitlesCommand =
-                        "-y -i ${videoFile.path} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+                        "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+                    // どのvideoと合成するか．
+                    //  "-y -i ${videoFile.path} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
 
                     showBurnProgressDialog();
 
@@ -174,13 +176,19 @@ class SubtitleTab implements PlayerTab {
   Future<File> getVideoFile() async {
     final String video = "video.mp4";
     Directory documentsDirectory = await VideoUtil.documentsDirectory;
-    return new File("${documentsDirectory.path}/$video");
+    // 画像から作成した動画の保存場所
+    //return new File("${documentsDirectory.path}/$video");
+    return File(
+        '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/video.mp4');
   }
 
   Future<File> getVideoWithSubtitlesFile() async {
     final String video = "video-with-subtitles.mp4";
     Directory documentsDirectory = await VideoUtil.documentsDirectory;
-    return new File("${documentsDirectory.path}/$video");
+    // 動画に字幕をつけた動画の保存場所
+    // return new File("${documentsDirectory.path}/$video");
+    return File(
+        '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/subtitlevideo.mp4');
   }
 
   void showCreateProgressDialog() {

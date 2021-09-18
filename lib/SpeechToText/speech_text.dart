@@ -108,9 +108,9 @@ class _SpeechToText extends State<SpeechToText> {
 
   Future<void> _stop() async {
     //speechtotextした結果を書き込む
-    getFilePath().then((File file) {
-      file.writeAsString(lastWords);
-    });
+    // getFilePath().then((File file) {
+    //   file.writeAsString(lastWords);
+    // });
 
     //タイマーを止める
     if (_timer.isActive) {
@@ -240,7 +240,7 @@ Future<File> getFilePath() async {
 
   // return File(directory.path + '/' + _fileName);
   return File(
-      '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/tests.str');
+      '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/tests.srt');
 }
 
 //テキストファイルの読み込み
