@@ -3,16 +3,74 @@ import 'package:camera/camera.dart';
 import 'package:ffmpeg_flutter_test/BookManagement/view/ui.dart';
 import 'package:ffmpeg_flutter_test/Camera/camera_get_video.dart';
 import 'package:ffmpeg_flutter_test/SpeechToText/speech_app.dart';
+import 'package:ffmpeg_flutter_test/SpeechToText/speech_text.dart';
+import 'package:ffmpeg_flutter_test/TextOutput/assets_output.dart';
+import 'package:ffmpeg_flutter_test/TextOutput/text_output.dart';
 import 'package:ffmpeg_flutter_test/Video/video_app.dart';
 import 'package:ffmpeg_flutter_test/Video/video_get.dart';
 import 'package:ffmpeg_flutter_test/VoiceRecoder/recorder_home_view.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'Camera/camera_example_home.dart';
 import 'ffmpeg/ui.dart';
 
 GlobalKey _globalKey = GlobalKey();
+
+class CounterStorage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<String> get _localPathtest async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File(
+        '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/counter.txt');
+    //return File('$path/counter.txt');
+    // =/Users/hasegawaitsuki/Library/Developer/CoreSimulator/Devices/661DC9A5-9224-4BC9-A812-223BA1DD0FD9/data/Containers/Data/Application/C0C0BB6D-8894-403D-A200-24932A938ADD/Documents/counter.txt'
+  }
+
+  Future<File> get _localFiletest async {
+    final path = await _localPath;
+    return File(
+        '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/test.txt');
+    //return File('$path/counter.txt');
+    // =/Users/hasegawaitsuki/Library/Developer/CoreSimulator/Devices/661DC9A5-9224-4BC9-A812-223BA1DD0FD9/data/Containers/Data/Application/C0C0BB6D-8894-403D-A200-24932A938ADD/Documents/counter.txt'
+  }
+
+  Future<int> readCounter() async {
+    try {
+      final file = await _localFile;
+
+      // Read the file
+      String contents = await file.readAsString();
+
+      return int.parse(contents);
+    } catch (e) {
+      // If encountering an error, return 0
+      return 0;
+    }
+  }
+
+  Future<File> writeCounter(int counter) async {
+    final file = await _localFile;
+    final filetest = await _localFiletest;
+
+    filetest.writeAsString('$counter\n\n', mode: FileMode.append, flush: true);
+
+    // Write the file
+    return file.writeAsString('$counter');
+  }
+}
 
 Future<void> main() async {
   // Fetch the available cameras before initializing the app.
@@ -85,7 +143,7 @@ class Top extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            SpeechScreen())); //speechtotextできる．
+                            SpeechToText())); //speechtotextできる．
               },
             ),
             SizedBox(height: 8),
@@ -96,6 +154,26 @@ class Top extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => RecorderHomeView()));
+              },
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              child: Text('textoutput'), //録音と再生ができる．
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => TextOutput()));
+              },
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              child: Text('assetsに接続'), //録音と再生ができる．
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FlutterDemo(
+                              storage: CounterStorage(),
+                            )));
               },
             ),
             SizedBox(height: 8),

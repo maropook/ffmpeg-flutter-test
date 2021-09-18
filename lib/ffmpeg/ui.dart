@@ -398,14 +398,23 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
                 Container(
                   padding: const EdgeInsets.only(top: 80, bottom: 60),
                   child: InkWell(
-                    onTap: () => subtitleTab.burnSubtitles(),
+                    onTap: () async {
+                      VideoUtil.prepareAssets();
+                      VideoUtil.registerAppFont();
+                      bool flug = true;
+                      while (flug) {
+                        await Future.delayed(Duration(seconds: 3));
+                        subtitleTab.burnSubtitles();
+                        flug = false;
+                      }
+                    },
                     child: Container(
                       width: 180,
                       height: 38,
                       decoration: buttonDecoration,
                       child: Center(
                         child: Text(
-                          'BURN SUBTITLES',
+                          'BURN SUBTITLES', //字幕
                           style: buttonTextStyle,
                         ),
                       ),
