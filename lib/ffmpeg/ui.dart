@@ -32,7 +32,7 @@ import 'package:ffmpeg_flutter_test/ffmpeg/pipe_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/player.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/progress_modal.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/subtitle_tab.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/test_api.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/test_api.dart.txt';
 import 'package:ffmpeg_flutter_test/ffmpeg/vid_stab_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
@@ -399,9 +399,12 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
                   padding: const EdgeInsets.only(top: 80, bottom: 60),
                   child: InkWell(
                     onTap: () async {
+                      //素材をセット
                       VideoUtil.prepareAssets();
                       VideoUtil.registerAppFont();
+
                       bool flug = true;
+                      //ボタンを押した3秒後に動画を生成
                       while (flug) {
                         await Future.delayed(Duration(seconds: 3));
                         subtitleTab.burnSubtitles();

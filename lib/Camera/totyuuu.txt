@@ -6,11 +6,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:ffmpeg_flutter_test/ffmpeg/flutter_ffmpeg_api_wrapper.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/ui.dart';
-import 'package:flutter_ffmpeg/completed_ffmpeg_execution.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +20,7 @@ class CameraExampleHome extends StatefulWidget {
 
 /// Returns a suitable camera icon for [direction].
 IconData getCameraLensIcon(CameraLensDirection direction) {
+  // インカメ
   switch (direction) {
     case CameraLensDirection.back:
       return Icons.camera_rear;
@@ -109,22 +105,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    final CameraController? cameraController = controller;
-
-    // App state changed before we got the chance to initialize.
-    if (cameraController == null || !cameraController.value.isInitialized) {
-      return;
-    }
-
-    if (state == AppLifecycleState.inactive) {
-      cameraController.dispose();
-    } else if (state == AppLifecycleState.resumed) {
-      onNewCameraSelected(cameraController.description);
-    }
-  }
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -177,27 +157,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     final CameraController? cameraController = controller;
 
     if (cameraController == null || !cameraController.value.isInitialized) {
-      if (cameras.isEmpty) {
-        return const Text('No camera found');
-      } else {
-        onNewCameraSelected(cameras.first);
-        return Listener(
-          onPointerDown: (_) => _pointers++,
-          onPointerUp: (_) => _pointers--,
-          child: CameraPreview(
-            controller!,
-            child: LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onScaleStart: _handleScaleStart,
-                onScaleUpdate: _handleScaleUpdate,
-                onTapDown: (details) => onViewFinderTap(details, constraints),
-              );
-            }),
-          ),
-        );
-      }
+      return Text('ああ');
     } else {
       return Listener(
         onPointerDown: (_) => _pointers++,
@@ -271,50 +231,36 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     );
   }
 
-  //
+  /// Display a bar with buttons to change the flash and exposure modes
+
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
     final CameraController? cameraController = controller;
 
-    return Stack(
-      children: <Widget>[
-        GestureDetector(
-          onTap: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  !cameraController.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : onStopButtonPressed,
-          child: Icon(
-            Icons.circle_outlined,
-            size: 80,
-            color: cameraController != null &&
-                    cameraController.value.isInitialized &&
-                    !cameraController.value.isRecordingVideo
-                ? Colors.grey
-                : Colors.grey,
-          ),
-        ),
-        GestureDetector(
-          onTap: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  !cameraController.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : onStopButtonPressed,
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Icon(
-              Icons.circle,
-              size: 70,
-              color: cameraController != null &&
-                      cameraController.value.isInitialized &&
-                      !cameraController.value.isRecordingVideo
-                  ? Colors.black
-                  : Colors.red,
-            ),
-          ),
-        ),
-      ],
-    );
+    return Stack(children: [
+      IconButton(
+        icon: const Icon(Icons.circle_outlined, size: 48.0),
+        color: Colors.blue,
+        onPressed: cameraController != null &&
+                cameraController.value.isInitialized &&
+                !cameraController.value.isRecordingVideo
+            ? onVideoRecordButtonPressed
+            : onStopButtonPressed,
+      ),
+      IconButton(
+        icon: const Icon(Icons.circle, size: 38.0),
+        color: cameraController != null &&
+                cameraController.value.isInitialized &&
+                !cameraController.value.isRecordingVideo
+            ? Colors.black
+            : Colors.red,
+        onPressed: cameraController != null &&
+                cameraController.value.isInitialized &&
+                !cameraController.value.isRecordingVideo
+            ? onVideoRecordButtonPressed
+            : onStopButtonPressed,
+      ),
+    ]);
   }
 
   /// Display a row of toggle to select the camera (or a message if no camera is available).
@@ -329,6 +275,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     };
 
     if (cameras.isEmpty) {
+      onNewCameraSelected(cameras.first);
       return const Text('No camera found');
     } else {
       for (CameraDescription cameraDescription in cameras) {
@@ -337,7 +284,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             width: 90.0,
             child: RadioListTile<CameraDescription>(
               title: Icon(getCameraLensIcon(cameraDescription.lensDirection)),
-              groupValue: controller?.description,
+              groupValue: controller?.description, //radioの値
               value: cameraDescription,
               onChanged:
                   controller != null && controller!.value.isRecordingVideo
@@ -384,9 +331,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       enableAudio: enableAudio,
       imageFormatGroup: ImageFormatGroup.jpeg,
     );
-
     controller = cameraController;
-
     // If the controller is updated then update the UI.
     cameraController.addListener(() {
       if (mounted) setState(() {});
@@ -431,33 +376,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     stopVideoRecording().then((file) {
       if (mounted) setState(() {});
       if (file != null) {
-        // String burnSubtitlesCommand =
-        //     "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf scale=1920:1080,pad=1920:1080:0:0:black -c:v mpeg4 ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/camera.mp4"} ";
-        // // どのvideoと合成するか．
-        // //  "-y -i ${videoFile.path} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-
-        // executeAsyncFFmpeg(burnSubtitlesCommand,
-        //     (CompletedFFmpegExecution secondExecution) {
-        //   ffprint(
-        //       "FFmpeg process exited with rc ${secondExecution.returnCode}.");
-
-        //   if (secondExecution.returnCode == 0) {
-        //     ffprint("Burn subtitles completed successfully; playing video.");
-        //   } else if (secondExecution.returnCode == 255) {
-        //     showPopup("Burn subtitles operation cancelled.");
-        //     ffprint("Burn subtitles operation cancelled");
-        //   } else {
-        //     showPopup(
-        //         "Burn subtitles failed. Please check log for the details.");
-        //     ffprint(
-        //         "Burn subtitles failed with rc=${secondExecution.returnCode}.");
-        //   }
-        // }).then((executionId) {
-        //   ffprint(
-        //       "Async FFmpeg process started with arguments '$burnSubtitlesCommand' and executionId $executionId.");
-        // });
-
-        showInSnackBar('saved Video recorded to ${file.path}');
+        showInSnackBar('Video recorded to ${file.path}');
+        //ここに保存した
         videoFile = file;
         _startVideoPlayer();
       }
@@ -507,9 +427,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
     final VideoPlayerController vController =
         VideoPlayerController.file(File(videoFile!.path));
-
-    print(videoFile!.path);
-
     videoPlayerListener = () {
       if (videoController != null && videoController!.value.size != null) {
         // Refreshing the state to update video player with the correct ratio.
@@ -530,12 +447,25 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     await vController.play();
   }
 
-  Future<String> returnVideoPath() async {
-    if (videoFile == null) {
-      return '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/video.mp4';
+  Future<XFile?> takePicture() async {
+    final CameraController? cameraController = controller;
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      showInSnackBar('Error: select a camera first.');
+      return null;
     }
 
-    return videoFile!.path;
+    if (cameraController.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return null;
+    }
+
+    try {
+      XFile file = await cameraController.takePicture();
+      return file;
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
+    }
   }
 
   void _showCameraException(CameraException e) {

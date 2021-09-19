@@ -1,76 +1,36 @@
-import 'package:flutter_ffmpeg/completed_ffmpeg_execution.dart';
-import 'package:flutter_ffmpeg/statistics.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/abstract.dart'; //
-import 'package:ffmpeg_flutter_test/ffmpeg/flutter_ffmpeg_api_wrapper.dart'; //
-import 'package:ffmpeg_flutter_test/ffmpeg/player.dart';
+/*
+ * Copyright (c) 2020 Taner Sener
+ *
+ * This file is part of FlutterFFmpeg.
+ *
+ * FlutterFFmpeg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FlutterFFmpeg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with FlutterFFmpeg.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 import 'dart:io';
-import 'package:path/path.dart';
-import 'dart:async';
-import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
-import 'util.dart';
+
+import 'package:flutter_ffmpeg/completed_ffmpeg_execution.dart';
+import 'package:flutter_ffmpeg/log.dart';
+import 'package:flutter_ffmpeg/statistics.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/abstract.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/flutter_ffmpeg_api_wrapper.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/player.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/popup.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/tooltip.dart';
+import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
-class VideoUtilkun {
-  static Future<Directory> get tempDirectory async {
-    return await getTemporaryDirectory();
-  }
-
-  static const String ASSET_1 = "pyramid.jpg";
-  static const String ASSET_2 = "colosseum.jpg";
-  static const String ASSET_3 = "tajmahal.jpg";
-  static const String SUBTITLE_ASSET = "subtitle.srt";
-  static const String FONT_ASSET_1 = "doppioone_regular.ttf";
-  static const String FONT_ASSET_2 = "truenorg.otf";
-
-  static void prepareAssets() async {
-    await VideoUtilkun.assetToFile(ASSET_1);
-    await VideoUtilkun.assetToFile(ASSET_2);
-    await VideoUtilkun.assetToFile(ASSET_3);
-    await VideoUtilkun.assetToFile(SUBTITLE_ASSET);
-    await VideoUtilkun.assetToFile(FONT_ASSET_1);
-    await VideoUtilkun.assetToFile(FONT_ASSET_2);
-  }
-
-  static Future<String> assetPath(String assetName) async {
-    return join((await tempDirectory).path, assetName);
-  }
-
-  static Future<Directory> get documentsDirectory async {
-    return await getApplicationDocumentsDirectory();
-  }
-
-  static Future<File> assetToFile(String assetName) async {
-    final ByteData assetByteData = await rootBundle.load('assets/$assetName');
-
-    final List<int> byteList = assetByteData.buffer
-        .asUint8List(assetByteData.offsetInBytes, assetByteData.lengthInBytes);
-
-    final String fullTemporaryPath =
-        join((await tempDirectory).path, assetName);
-
-    Future<File> fileFuture = new File(fullTemporaryPath)
-        .writeAsBytes(byteList, mode: FileMode.writeOnly, flush: true);
-
-    ffprint('assets/$assetName saved to file at $fullTemporaryPath.');
-
-    return fileFuture;
-  }
-}
-
-void showPopup(String text) {
-  Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 2,
-      backgroundColor: Colors.white70,
-      textColor: Colors.black87,
-      fontSize: 16.0);
-}
+import 'util.dart';
 
 enum _State { IDLE, CREATING, BURNING }
 
@@ -90,8 +50,14 @@ class SubtitleTab implements PlayerTab {
 
   void setActive() {
     print("Subtitle Tab Activated");
-
+    enableLogCallback(logCallback);
     enableStatisticsCallback(statisticsCallback);
+    showPopup(SUBTITLE_TEST_TOOLTIP_TEXT);
+  }
+
+  void logCallback(Log log) {
+    ffprint(log.message);
+    _refreshablePlayerDialogFactory.refresh();
   }
 
   void statisticsCallback(Statistics statistics) {
@@ -100,7 +66,7 @@ class SubtitleTab implements PlayerTab {
   }
 
   void burnSubtitles() {
-    VideoUtilkun.assetPath(VideoUtilkun.SUBTITLE_ASSET).then((subtitlePath) {
+    VideoUtil.assetPath(VideoUtil.SUBTITLE_ASSET).then((subtitlePath) {
       getVideoFile().then((videoFile) {
         getVideoWithSubtitlesFile().then((videoWithSubtitlesFile) {
           // IF VIDEO IS PLAYING STOP PLAYBACK
@@ -177,7 +143,7 @@ class SubtitleTab implements PlayerTab {
 
   Future<File> getVideoFile() async {
     final String video = "video.mp4";
-    Directory documentsDirectory = await VideoUtilkun.documentsDirectory;
+    Directory documentsDirectory = await VideoUtil.documentsDirectory;
     // 画像から作成した動画の保存場所
     //return new File("${documentsDirectory.path}/$video");
     return File(
@@ -186,7 +152,7 @@ class SubtitleTab implements PlayerTab {
 
   Future<File> getVideoWithSubtitlesFile() async {
     final String video = "video-with-subtitles.mp4";
-    Directory documentsDirectory = await VideoUtilkun.documentsDirectory;
+    Directory documentsDirectory = await VideoUtil.documentsDirectory;
     // 動画に字幕をつけた動画の保存場所
     // return new File("${documentsDirectory.path}/$video");
     return File(

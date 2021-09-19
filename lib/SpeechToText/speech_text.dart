@@ -24,7 +24,7 @@ class SpeechToText extends StatefulWidget {
 
 class _SpeechToText extends State<SpeechToText> {
   String _out = '';
-  String lastWords = "";
+  String lastWords = "　";
   String lastError = '';
   String lastStatus = '';
   stt.SpeechToText speech = stt.SpeechToText();
@@ -240,7 +240,7 @@ Future<File> getFilePath() async {
 
   // return File(directory.path + '/' + _fileName);
   return File(
-      '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/tests.srt');
+      '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/subtitle.srt');
 }
 
 //テキストファイルの読み込み

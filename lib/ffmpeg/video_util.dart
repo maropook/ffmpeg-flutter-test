@@ -103,6 +103,7 @@ class VideoUtil {
   }
 
   static String generateEncodeVideoScript(
+      //subtitles
       String image1Path,
       String image2Path,
       String image3Path,
@@ -140,6 +141,7 @@ class VideoUtil {
   }
 
   static String generateShakingVideoScript(
+      //vid_stab_tab 上がガタガタしたので，したが安定した動画が見れる
       final String image1Path,
       final String image2Path,
       final String image3Path,
@@ -170,6 +172,7 @@ class VideoUtil {
   }
 
   static String generateCreateVideoWithPipesScript(
+      //pipe_tab
       final String image1Pipe,
       final String image2Pipe,
       final String image3Pipe,
