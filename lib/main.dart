@@ -9,8 +9,8 @@ import 'package:ffmpeg_flutter_test/TextOutput/text_output.dart';
 import 'package:ffmpeg_flutter_test/Video/video_app.dart';
 import 'package:ffmpeg_flutter_test/Video/video_get.dart';
 import 'package:ffmpeg_flutter_test/VoiceRecoder/recorder_home_view.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
+// import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
+// import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'Camera/camera_example_home.dart';
@@ -113,8 +113,12 @@ class Top extends StatelessWidget {
               child:
                   Text('【公式サンプル】ffmpeg/flutter_ffmpeg'), //chromeでbuildしても動かない
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainffmpegPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            // MainffmpegPage()
+                            TopPage()));
               },
             ),
             SizedBox(height: 8),

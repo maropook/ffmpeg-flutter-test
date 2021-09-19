@@ -169,6 +169,13 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        print(videoFile!.path);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MainffmpegPage(videoFile!.path)));
+      }),
     );
   }
 
