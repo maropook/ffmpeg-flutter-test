@@ -280,16 +280,12 @@ class VideoUtil {
 
   static const String ASSET_1 = "pyramid.jpg";
   static const String ASSET_2 = "colosseum.jpg";
-  static const String ASSET_3 = "tajmahal.jpg";
-  static const String SUBTITLE_ASSET = "subtitle.srt";
   static const String FONT_ASSET_1 = "doppioone_regular.ttf";
   static const String FONT_ASSET_2 = "truenorg.otf";
 
   static void prepareAssets() async {
     await VideoUtil.assetToFile(ASSET_1);
     await VideoUtil.assetToFile(ASSET_2);
-    await VideoUtil.assetToFile(ASSET_3);
-    await VideoUtil.assetToFile(SUBTITLE_ASSET);
     await VideoUtil.assetToFile(FONT_ASSET_1);
     await VideoUtil.assetToFile(FONT_ASSET_2);
   }

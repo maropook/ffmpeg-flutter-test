@@ -12,10 +12,10 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 //出力するテキストファイル名
 final _fileName = 'editTextField.txt';
 
-class CameraExampleHome extends StatefulWidget {
+class CameraHomePage extends StatefulWidget {
   @override
-  _CameraExampleHomeState createState() {
-    return _CameraExampleHomeState();
+  _CameraHomePageState createState() {
+    return _CameraHomePageState();
   }
 }
 
@@ -41,7 +41,7 @@ void logError(String code, String? message) {
   }
 }
 
-class _CameraExampleHomeState extends State<CameraExampleHome>
+class _CameraHomePageState extends State<CameraHomePage>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   CameraController? controller;
   XFile? imageFile;
@@ -416,7 +416,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   /// Display the thumbnail of the captured image or video.
   Widget _thumbnailWidget() {
     final VideoPlayerController? localVideoController = videoController;
-
     return Expanded(
       child: Align(
         alignment: Alignment.centerRight,
@@ -454,7 +453,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
     final CameraController? cameraController = controller;
-
     return Stack(
       children: <Widget>[
         GestureDetector(
@@ -610,7 +608,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   void onVideoRecordButtonPressed() {
     //start video record
-
     _speak().then((_) {
       _speak().then((_) {
         if (mounted) setState(() {});
@@ -706,15 +703,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void _showCameraException(CameraException e) {
     logError(e.code, e.description);
     showInSnackBar('Error: ${e.code}\n${e.description}');
-  }
-}
-
-class CameraApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: CameraExampleHome(),
-    );
   }
 }
 
