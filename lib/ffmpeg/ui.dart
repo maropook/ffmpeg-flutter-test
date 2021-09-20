@@ -201,23 +201,24 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
             child: InkWell(
               onTap: () async {
                 //素材をセット
-                VideoUtilkun.prepareAssets();
-                VideoUtilkun.registerAppFont();
+                // VideoUtilkun.prepareAssets();
+                // VideoUtilkun.registerAppFont();
 
-                bool flug = true;
+                // bool flug = true;
+                subtitleTab.burnSubtitles();
+
                 //ボタンを押した3秒後に動画を生成
-                while (flug) {
-                  await Future.delayed(Duration(seconds: 3));
-                  subtitleTab.burnSubtitles();
-                  flug = false;
-                }
+                // while (flug) {
+                //   await Future.delayed(Duration(seconds: 3));
+                //   flug = false;
+                // }
               },
               child: Container(
                 width: 180,
                 height: 38,
                 child: Center(
                   child: Text(
-                    'BURN SUBTITLES', //字幕
+                    'BURN SUBTITLES', //字幕  動画を作成
                   ),
                 ),
               ),
