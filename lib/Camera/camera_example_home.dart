@@ -76,6 +76,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   int _pointers = 0;
 
   String _out = '';
+  String strPath = '';
   String lastWords = "　";
   String lastError = '';
   String lastStatus = '';
@@ -149,8 +150,19 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     });
   }
 
+  void loadButtonStr() async {
+    setState(() {
+      loadStr().then((String value) {
+        setState(() {
+          strPath = value;
+        });
+      });
+    });
+  }
+
   Future<void> _stop() async {
     loadButton();
+    loadButtonStr();
 
     //タイマーを止める
     if (_timer.isActive) {
@@ -324,7 +336,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => MainffmpegPage(videoFile!.path)));
+                  builder: (context) =>
+                      MainffmpegPage(videoFile!.path, strPath)));
         }),
       ]),
     );
@@ -712,4 +725,9 @@ Future<File> getFilePath() async {
 Future<String> load() async {
   final file = await getFilePath();
   return file.readAsString();
+}
+
+Future<String> loadStr() async {
+  final file = await getFilePath();
+  return file.path;
 }

@@ -145,25 +145,27 @@ void ffprint(String text) {
 GlobalKey _globalKey = GlobalKey();
 
 class MainffmpegPage extends StatefulWidget {
-  MainffmpegPage(this.videoPath);
+  MainffmpegPage(this.videoPath, this.strPath);
   String videoPath;
+  String strPath;
   @override
   FlutterFFmpegExampleAppState createState() =>
-      FlutterFFmpegExampleAppState(videoPath);
+      FlutterFFmpegExampleAppState(videoPath, strPath);
 }
 
 class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
     with TickerProviderStateMixin
     implements RefreshablePlayerDialogFactory {
-  FlutterFFmpegExampleAppState(this.videoPath);
+  FlutterFFmpegExampleAppState(this.videoPath, this.strPath);
   String videoPath;
+  String strPath;
 
   // COMMON COMPONENTS
   late TabController _controller;
   ProgressModal? progressModal;
 
   // SUBTITLE TAB COMPONENTS
-  late SubtitleTab subtitleTab = SubtitleTab(videoPath);
+  late SubtitleTab subtitleTab = SubtitleTab(videoPath, strPath);
   // CONCURRENT EXECUTION TAB COMPONENTS
 
   void refresh() {
@@ -349,8 +351,9 @@ void showPopup(String text) {
 enum _State { IDLE, CREATING, BURNING }
 
 class SubtitleTab implements PlayerTab {
-  SubtitleTab(this.videoPath);
+  SubtitleTab(this.videoPath, this.strPath);
   String videoPath;
+  String strPath;
   VideoPlayerController? _videoPlayerController;
   late RefreshablePlayerDialogFactory _refreshablePlayerDialogFactory;
   late Statistics? _statistics;
@@ -395,7 +398,7 @@ class SubtitleTab implements PlayerTab {
           String burnSubtitlesCommand =
               //  "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
               // どのvideoと合成するか．
-              "-y -i ${videoPath} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+              "-y -i ${videoPath} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
 
           showBurnProgressDialog();
 
