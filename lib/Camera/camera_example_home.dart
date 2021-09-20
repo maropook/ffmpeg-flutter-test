@@ -450,11 +450,15 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Stack(
       children: <Widget>[
         GestureDetector(
-          onTap: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  !cameraController.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : onStopButtonPressed,
+          onTap: () {
+            if (cameraController != null &&
+                cameraController.value.isInitialized &&
+                !cameraController.value.isRecordingVideo) {
+              onVideoRecordButtonPressed();
+            } else {
+              onStopButtonPressed();
+            }
+          },
           child: Icon(
             Icons.circle_outlined,
             size: 80,
@@ -466,11 +470,15 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           ),
         ),
         GestureDetector(
-          onTap: cameraController != null &&
-                  cameraController.value.isInitialized &&
-                  !cameraController.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : onStopButtonPressed,
+          onTap: () {
+            if (cameraController != null &&
+                cameraController.value.isInitialized &&
+                !cameraController.value.isRecordingVideo) {
+              onVideoRecordButtonPressed();
+            } else {
+              onStopButtonPressed();
+            }
+          },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Icon(
@@ -594,12 +602,22 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   void onVideoRecordButtonPressed() {
     //start video record
+
+    _speak().then((_) {
+      _speak().then((_) {
+        if (mounted) setState(() {});
+      });
+    });
+
     startVideoRecording().then((_) {
       if (mounted) setState(() {});
     });
   }
 
   void onStopButtonPressed() {
+    _stop().then((_) {
+      if (mounted) setState(() {});
+    });
     //stop video record
     stopVideoRecording().then((file) {
       if (mounted) setState(() {});
