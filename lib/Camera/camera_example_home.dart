@@ -525,7 +525,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       }
     };
     vController.addListener(videoPlayerListener!);
-    await vController.setLooping(true);
+    await vController.setLooping(false);
     await vController.initialize();
     await videoController?.dispose();
     if (mounted) {
