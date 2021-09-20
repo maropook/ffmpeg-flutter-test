@@ -329,8 +329,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       ),
       floatingActionButton:
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        FloatingActionButton(onPressed: _speak, child: Icon(Icons.play_arrow)),
-        FloatingActionButton(onPressed: _stop, child: Icon(Icons.stop)),
+        FloatingActionButton(
+            onPressed: () {
+              onVideoRecordButtonPressed();
+              _speak();
+            },
+            child: Icon(Icons.play_arrow)),
+        FloatingActionButton(
+            onPressed: () {
+              _stop();
+              onStopButtonPressed();
+            },
+            child: Icon(Icons.stop)),
         FloatingActionButton(onPressed: () {
           print(videoFile!.path);
           Navigator.push(
