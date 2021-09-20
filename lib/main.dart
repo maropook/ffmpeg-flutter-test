@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'Camera/camera_example_home.dart';
+import 'view/camera_example_home.dart';
 
 Future<void> main() async {
   // Fetch the available cameras before initializing the app.

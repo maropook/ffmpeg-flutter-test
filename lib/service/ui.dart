@@ -29,8 +29,8 @@ import 'package:flutter_ffmpeg/completed_ffmpeg_execution.dart';
 import 'package:flutter_ffmpeg/statistics.dart';
 import 'package:flutter_ffmpeg/log_level.dart';
 
-import 'package:ffmpeg_flutter_test/ffmpeg/progress_modal.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/flutter_ffmpeg_api_wrapper.dart'; //
+import 'package:ffmpeg_flutter_test/service/progress_modal.dart';
+import 'package:ffmpeg_flutter_test/service/flutter_ffmpeg_api_wrapper.dart'; //
 
 class Refreshable {
   void refresh() {}
@@ -161,7 +161,6 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
   String strPath;
 
   // COMMON COMPONENTS
-  late TabController _controller;
   ProgressModal? progressModal;
 
   // SUBTITLE TAB COMPONENTS
@@ -175,13 +174,10 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
   @override
   void initState() {
     super.initState();
-
     subtitleTab.init(this);
     subtitleTab.setActive();
-
-    VideoUtilkun.prepareAssets();
-    VideoUtilkun.registerAppFont();
-
+    VideoUtil.prepareAssets();
+    VideoUtil.registerAppFont();
     setLogLevel(LogLevel.AV_LOG_INFO);
   }
 
@@ -200,18 +196,7 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
             padding: const EdgeInsets.only(top: 0, bottom: 0),
             child: InkWell(
               onTap: () async {
-                //素材をセット
-                // VideoUtilkun.prepareAssets();
-                // VideoUtilkun.registerAppFont();
-
-                // bool flug = true;
                 subtitleTab.burnSubtitles();
-
-                //ボタンを押した3秒後に動画を生成
-                // while (flug) {
-                //   await Future.delayed(Duration(seconds: 3));
-                //   flug = false;
-                // }
               },
               child: Container(
                 width: 180,
@@ -247,7 +232,6 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {}),
     );
   }
 
@@ -276,7 +260,7 @@ class FlutterFFmpegExampleAppState extends State<MainffmpegPage>
   }
 }
 
-class VideoUtilkun {
+class VideoUtil {
   static Future<Directory> get tempDirectory async {
     return await getTemporaryDirectory();
   }
@@ -284,7 +268,7 @@ class VideoUtilkun {
   static void registerAppFont() {
     var fontNameMapping = Map<String, String>();
     fontNameMapping["MyFontName"] = "Doppio One";
-    VideoUtilkun.tempDirectory.then((tempDirectory) {
+    VideoUtil.tempDirectory.then((tempDirectory) {
       setFontDirectory(tempDirectory.path, fontNameMapping);
       setEnvironmentVariable(
           "FFREPORT",
@@ -300,16 +284,14 @@ class VideoUtilkun {
   static const String SUBTITLE_ASSET = "subtitle.srt";
   static const String FONT_ASSET_1 = "doppioone_regular.ttf";
   static const String FONT_ASSET_2 = "truenorg.otf";
-  static const String Movie_1 = "a.mp4";
 
   static void prepareAssets() async {
-    await VideoUtilkun.assetToFile(ASSET_1);
-    await VideoUtilkun.assetToFile(ASSET_2);
-    await VideoUtilkun.assetToFile(ASSET_3);
-    await VideoUtilkun.assetToFile(SUBTITLE_ASSET);
-    await VideoUtilkun.assetToFile(FONT_ASSET_1);
-    await VideoUtilkun.assetToFile(FONT_ASSET_2);
-    await VideoUtilkun.assetToFile(Movie_1);
+    await VideoUtil.assetToFile(ASSET_1);
+    await VideoUtil.assetToFile(ASSET_2);
+    await VideoUtil.assetToFile(ASSET_3);
+    await VideoUtil.assetToFile(SUBTITLE_ASSET);
+    await VideoUtil.assetToFile(FONT_ASSET_1);
+    await VideoUtil.assetToFile(FONT_ASSET_2);
   }
 
   static Future<String> assetPath(String assetName) async {
@@ -380,97 +362,77 @@ class SubtitleTab implements PlayerTab {
   }
 
   void burnSubtitles() {
-    VideoUtilkun.assetPath(VideoUtilkun.ASSET_1).then((img1Path) {
-      VideoUtilkun.assetPath(VideoUtilkun.ASSET_2).then((img2Path) {
-        VideoUtilkun.assetPath(VideoUtilkun.SUBTITLE_ASSET)
-            .then((subtitlePath) {
-          VideoUtilkun.assetToFile(VideoUtilkun.Movie_1).then((videoFile2) {
-            VideoUtilkun.assetPath(VideoUtilkun.SUBTITLE_ASSET)
-                .then((subtitlePath) {
-              getVideoFile().then((videoFile) {
-                getVideoWithSubtitlesFile().then((videoWithSubtitlesFile) {
-                  // IF VIDEO IS PLAYING STOP PLAYBACK
-                  pause();
+    VideoUtil.assetPath(VideoUtil.ASSET_1).then((img1Path) {
+      VideoUtil.assetPath(VideoUtil.ASSET_2).then((img2Path) {
+        getVideoFile().then((videoFile) {
+          getVideoWithSubtitlesFile().then((videoWithSubtitlesFile) {
+            // IF VIDEO IS PLAYING STOP PLAYBACK
+            pause();
 
-                  try {
-                    videoFile.delete().catchError((_) {});
-                  } on Exception catch (_) {}
+            try {
+              videoFile.delete().catchError((_) {});
+            } on Exception catch (_) {}
 
-                  try {
-                    videoWithSubtitlesFile.delete().catchError((_) {});
-                  } on Exception catch (_) {}
+            try {
+              videoWithSubtitlesFile.delete().catchError((_) {});
+            } on Exception catch (_) {}
 
-                  ffprint("Testing SUBTITLE burning");
+            ffprint("Testing SUBTITLE burning");
 
-                  showCreateProgressDialog();
+            showCreateProgressDialog();
 
-                  String ffmpegCommand =
-                      //  "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-                      // どのvideoと合成するか．
-                      //"-y -i ${videoPath} -vf movie=${img1Path} [watermark];[in][watermark] overlay=main_w-overlay_w-40:main_h-overlay_h-40 [out] ${videoWithSubtitlesFile.path}";
-                      //main//    "-y -i ${videoPath} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+            String ffmpegCommand =
+                "-y -i ${videoPath} -i ${img1Path} -filter_complex overlay=W-w:H-h -c:v mpeg4 ${videoFile.path}";
 
-                      "-y -i ${videoPath} -i ${img1Path} -filter_complex overlay=W-w:H-h -c:v mpeg4 ${videoFile.path}";
+            _state = _State.CREATING;
 
-                  _state = _State.CREATING;
+            executeAsyncFFmpeg(ffmpegCommand,
+                (CompletedFFmpegExecution execution) {
+              ffprint("FFmpeg process exited with rc ${execution.returnCode}.");
 
-                  executeAsyncFFmpeg(ffmpegCommand,
-                      (CompletedFFmpegExecution execution) {
+              hideProgressDialog();
+
+              if (execution.returnCode == 0) {
+                ffprint("Create completed successfully; burning subtitles.");
+
+                String burnSubtitlesCommand =
+                    "-y -i ${videoFile.path} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+                showBurnProgressDialog();
+
+                ffprint(
+                    "FFmpeg process started with arguments\n\'$burnSubtitlesCommand\'.");
+
+                _state = _State.BURNING;
+
+                executeAsyncFFmpeg(burnSubtitlesCommand,
+                    (CompletedFFmpegExecution secondExecution) {
+                  ffprint(
+                      "FFmpeg process exited with rc ${secondExecution.returnCode}.");
+                  hideProgressDialog();
+
+                  if (secondExecution.returnCode == 0) {
                     ffprint(
-                        "FFmpeg process exited with rc ${execution.returnCode}.");
-
-                    hideProgressDialog();
-
-                    if (execution.returnCode == 0) {
-                      ffprint(
-                          "Create completed successfully; burning subtitles.");
-
-                      String burnSubtitlesCommand =
-                          "-y -i ${videoFile.path} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-
-                      // "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-                      // どのvideoと合成するか．
-                      // "-y -i ${videoFile.path} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-
-                      showBurnProgressDialog();
-
-                      ffprint(
-                          "FFmpeg process started with arguments\n\'$burnSubtitlesCommand\'.");
-
-                      _state = _State.BURNING;
-
-                      executeAsyncFFmpeg(burnSubtitlesCommand,
-                          (CompletedFFmpegExecution secondExecution) {
-                        ffprint(
-                            "FFmpeg process exited with rc ${secondExecution.returnCode}.");
-                        hideProgressDialog();
-
-                        if (secondExecution.returnCode == 0) {
-                          ffprint(
-                              "Burn subtitles completed successfully; playing video.");
-                          playVideo();
-                        } else if (secondExecution.returnCode == 255) {
-                          showPopup("Burn subtitles operation cancelled.");
-                          ffprint("Burn subtitles operation cancelled");
-                        } else {
-                          showPopup(
-                              "Burn subtitles failed. Please check log for the details.");
-                          ffprint(
-                              "Burn subtitles failed with rc=${secondExecution.returnCode}.");
-                        }
-                      }).then((executionId) {
-                        _executionId = executionId;
-                        ffprint(
-                            "Async FFmpeg process started with arguments '$burnSubtitlesCommand' and executionId $executionId.");
-                      });
-                    }
-                  }).then((executionId) {
-                    _executionId = executionId;
+                        "Burn subtitles completed successfully; playing video.");
+                    playVideo();
+                  } else if (secondExecution.returnCode == 255) {
+                    showPopup("Burn subtitles operation cancelled.");
+                    ffprint("Burn subtitles operation cancelled");
+                  } else {
+                    showPopup(
+                        "Burn subtitles failed. Please check log for the details.");
                     ffprint(
-                        "Async FFmpeg process started with arguments '$ffmpegCommand' and executionId $executionId.");
-                  });
+                        "Burn subtitles failed with rc=${secondExecution.returnCode}.");
+                  }
+                }).then((executionId) {
+                  _executionId = executionId;
+                  ffprint(
+                      "Async FFmpeg process started with arguments '$burnSubtitlesCommand' and executionId $executionId.");
                 });
-              });
+              }
+            }).then((executionId) {
+              _executionId = executionId;
+              ffprint(
+                  "Async FFmpeg process started with arguments '$ffmpegCommand' and executionId $executionId.");
             });
           });
         });
@@ -495,20 +457,16 @@ class SubtitleTab implements PlayerTab {
 
   Future<File> getVideoFile() async {
     final String video = "video.mp4";
-    Directory documentsDirectory = await VideoUtilkun.documentsDirectory;
+    Directory documentsDirectory = await VideoUtil.documentsDirectory;
     // 画像から作成した動画の保存場所
     return new File("${documentsDirectory.path}/$video");
-    //return File(
-    // '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/video.mp4');
   }
 
   Future<File> getVideoWithSubtitlesFile() async {
     final String video = "video-with-subtitles.mp4";
-    Directory documentsDirectory = await VideoUtilkun.documentsDirectory;
+    Directory documentsDirectory = await VideoUtil.documentsDirectory;
     // 動画に字幕をつけた動画の保存場所
     return new File("${documentsDirectory.path}/$video");
-    // return File(
-    //     '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/subtitlevideo.mp4');
   }
 
   void showCreateProgressDialog() {

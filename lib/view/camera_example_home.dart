@@ -1,22 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:ffmpeg_flutter_test/ffmpeg/flutter_ffmpeg_api_wrapper.dart';
-import 'package:ffmpeg_flutter_test/ffmpeg/ui.dart';
-import 'package:flutter_ffmpeg/completed_ffmpeg_execution.dart';
+import 'package:ffmpeg_flutter_test/service/ui.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:video_player/video_player.dart';
-
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-//非同期処理用ライブラリ
-import 'dart:async';
-//アプリがファイルを保存可能な場所を取得するライブラリ
-import 'package:path_provider/path_provider.dart';
 
 //出力するテキストファイル名
 final _fileName = 'editTextField.txt';
@@ -273,7 +264,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Camera example'),
+        title: const Text('neon'),
       ),
       body: Column(
         children: <Widget>[
@@ -288,6 +279,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                       child: _cameraPreviewWidget(),
                     ),
                     Image.asset('assets/pyramid.jpg'),
+                    //アバター表示
                   ],
                 ),
               ),
@@ -728,25 +720,6 @@ class CameraApp extends StatelessWidget {
 
 List<CameraDescription> cameras = [];
 
-Future<void> main() async {
-  // Fetch the available cameras before initializing the app.
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    print('tryカメラ');
-    cameras = await availableCameras();
-  } on CameraException catch (e) {
-    logError(e.code, e.description);
-  }
-  runApp(CameraApp());
-}
-
-/// This allows a value of type T or T? to be treated as a value of type T?.
-///
-/// We use this so that APIs that have become non-nullable can still be used
-/// with `!` and `?` on the stable branch.
-// TODO(ianh): Remove this once we roll stable in late 2021.
-T? _ambiguate<T>(T? value) => value;
-
 Future<File> getFilePath() async {
   final directory = await getTemporaryDirectory();
 
@@ -765,3 +738,10 @@ Future<String> loadStr() async {
   final file = await getFilePath();
   return file.path;
 }
+
+/// This allows a value of type T or T? to be treated as a value of type T?.
+///
+/// We use this so that APIs that have become non-nullable can still be used
+/// with `!` and `?` on the stable branch.
+// TODO(ianh): Remove this once we roll stable in late 2021.
+T? _ambiguate<T>(T? value) => value;
