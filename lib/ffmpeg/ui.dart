@@ -379,61 +379,94 @@ class SubtitleTab implements PlayerTab {
   }
 
   void burnSubtitles() {
-    VideoUtilkun.assetPath(VideoUtilkun.SUBTITLE_ASSET).then((subtitlePath) {
-      VideoUtilkun.assetPath(VideoUtilkun.ASSET_1).then((img1Path) {
-        VideoUtilkun.assetToFile(VideoUtilkun.Movie_1).then((videoFile) {
-          getVideoWithSubtitlesFile().then((videoWithSubtitlesFile) {
-            // IF VIDEO IS PLAYING STOP PLAYBACK
-            pause();
+    VideoUtilkun.assetPath(VideoUtilkun.ASSET_1).then((img1Path) {
+      VideoUtilkun.assetPath(VideoUtilkun.SUBTITLE_ASSET).then((subtitlePath) {
+        VideoUtilkun.assetToFile(VideoUtilkun.Movie_1).then((videoFile2) {
+          VideoUtilkun.assetPath(VideoUtilkun.SUBTITLE_ASSET)
+              .then((subtitlePath) {
+            getVideoFile().then((videoFile) {
+              getVideoWithSubtitlesFile().then((videoWithSubtitlesFile) {
+                // IF VIDEO IS PLAYING STOP PLAYBACK
+                pause();
 
-            try {
-              videoWithSubtitlesFile.delete().catchError((_) {});
-            } on Exception catch (_) {}
+                try {
+                  videoFile.delete().catchError((_) {});
+                } on Exception catch (_) {}
 
-            ffprint("Testing SUBTITLE burning");
+                try {
+                  videoWithSubtitlesFile.delete().catchError((_) {});
+                } on Exception catch (_) {}
 
-            _state = _State.CREATING;
+                ffprint("Testing SUBTITLE burning");
 
-            ffprint("Create completed successfully; burning subtitles.");
-//subtitle
-            String burnSubtitlesCommand =
-                //  "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-                // どのvideoと合成するか．
-                //"-y -i ${videoPath} -vf movie=${img1Path} [watermark];[in][watermark] overlay=main_w-overlay_w-40:main_h-overlay_h-40 [out] ${videoWithSubtitlesFile.path}";
-                //main//    "-y -i ${videoPath} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+                showCreateProgressDialog();
 
-                "-y -i ${videoPath} -i ${img1Path} -filter_complex [1:v]lut=a='val*0.4',[0:v]overlay=W-w:H-h -c:v mpeg4 ${videoWithSubtitlesFile.path}";
-// ffmpeg -i inputvideo.mp4 -vf "movie=watermarklogo.png [watermark];[in][watermark] overlay=main_w-overlay_w-40:main_h-overlay_h-40 [out]" outputvideo.mp4
-            showBurnProgressDialog();
+                String ffmpegCommand =
+                    //  "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+                    // どのvideoと合成するか．
+                    //"-y -i ${videoPath} -vf movie=${img1Path} [watermark];[in][watermark] overlay=main_w-overlay_w-40:main_h-overlay_h-40 [out] ${videoWithSubtitlesFile.path}";
+                    //main//    "-y -i ${videoPath} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
 
-            ffprint(
-                "FFmpeg process started with arguments\n\'$burnSubtitlesCommand\'.");
+                    "-y -i ${videoPath} -i ${img1Path} -filter_complex [1:v]lut=a='val*0.4',[0:v]overlay=W-w:H-h -c:v mpeg4 ${videoFile.path}";
 
-            _state = _State.BURNING;
+                _state = _State.CREATING;
 
-            executeAsyncFFmpeg(burnSubtitlesCommand,
-                (CompletedFFmpegExecution secondExecution) {
-              ffprint(
-                  "FFmpeg process exited with rc ${secondExecution.returnCode}.");
-              hideProgressDialog();
+                executeAsyncFFmpeg(ffmpegCommand,
+                    (CompletedFFmpegExecution execution) {
+                  ffprint(
+                      "FFmpeg process exited with rc ${execution.returnCode}.");
 
-              if (secondExecution.returnCode == 0) {
-                ffprint(
-                    "Burn subtitles completed successfully; playing video.");
-                playVideo();
-              } else if (secondExecution.returnCode == 255) {
-                showPopup("Burn subtitles operation cancelled.");
-                ffprint("Burn subtitles operation cancelled");
-              } else {
-                showPopup(
-                    "Burn subtitles failed. Please check log for the details.");
-                ffprint(
-                    "Burn subtitles failed with rc=${secondExecution.returnCode}.");
-              }
-            }).then((executionId) {
-              _executionId = executionId;
-              ffprint(
-                  "Async FFmpeg process started with arguments '$burnSubtitlesCommand' and executionId $executionId.");
+                  hideProgressDialog();
+
+                  if (execution.returnCode == 0) {
+                    ffprint(
+                        "Create completed successfully; burning subtitles.");
+
+                    String burnSubtitlesCommand =
+                        "-y -i ${videoFile.path} -vf subtitles=$strPath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+
+                    // "-y -i ${"/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/a.mp4"} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+                    // どのvideoと合成するか．
+                    // "-y -i ${videoFile.path} -vf subtitles=$subtitlePath:force_style='Fontname=Trueno' -c:v mpeg4 ${videoWithSubtitlesFile.path}";
+
+                    showBurnProgressDialog();
+
+                    ffprint(
+                        "FFmpeg process started with arguments\n\'$burnSubtitlesCommand\'.");
+
+                    _state = _State.BURNING;
+
+                    executeAsyncFFmpeg(burnSubtitlesCommand,
+                        (CompletedFFmpegExecution secondExecution) {
+                      ffprint(
+                          "FFmpeg process exited with rc ${secondExecution.returnCode}.");
+                      hideProgressDialog();
+
+                      if (secondExecution.returnCode == 0) {
+                        ffprint(
+                            "Burn subtitles completed successfully; playing video.");
+                        playVideo();
+                      } else if (secondExecution.returnCode == 255) {
+                        showPopup("Burn subtitles operation cancelled.");
+                        ffprint("Burn subtitles operation cancelled");
+                      } else {
+                        showPopup(
+                            "Burn subtitles failed. Please check log for the details.");
+                        ffprint(
+                            "Burn subtitles failed with rc=${secondExecution.returnCode}.");
+                      }
+                    }).then((executionId) {
+                      _executionId = executionId;
+                      ffprint(
+                          "Async FFmpeg process started with arguments '$burnSubtitlesCommand' and executionId $executionId.");
+                    });
+                  }
+                }).then((executionId) {
+                  _executionId = executionId;
+                  ffprint(
+                      "Async FFmpeg process started with arguments '$ffmpegCommand' and executionId $executionId.");
+                });
+              });
             });
           });
         });
