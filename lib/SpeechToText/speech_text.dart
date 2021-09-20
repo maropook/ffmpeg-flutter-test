@@ -238,9 +238,9 @@ class _SpeechToText extends State<SpeechToText> {
 Future<File> getFilePath() async {
   final directory = await getTemporaryDirectory();
 
-  // return File(directory.path + '/' + _fileName);
-  return File(
-      '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/subtitle.srt');
+  return File(directory.path + '/' + _fileName);
+  // return File(
+  //     '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/subtitle.srt');
 }
 
 //テキストファイルの読み込み
