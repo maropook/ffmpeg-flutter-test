@@ -281,8 +281,14 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(1.0),
-                child: Center(
-                  child: _cameraPreviewWidget(),
+                child: Stack(
+                  alignment: AlignmentDirectional.bottomEnd,
+                  children: [
+                    Center(
+                      child: _cameraPreviewWidget(),
+                    ),
+                    Image.asset('assets/pyramid.jpg'),
+                  ],
                 ),
               ),
               decoration: BoxDecoration(
