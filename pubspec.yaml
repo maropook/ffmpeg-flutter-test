@@ -53,6 +53,7 @@ dependencies:
   avatar_glow: ^2.0.1
   flutter_audio_recorder2: ^0.0.2
   chewie: ^1.2.2
+  analyzer: ^2.3.0
 
 dev_dependencies:
   flutter_test:

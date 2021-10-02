@@ -17,6 +17,9 @@
  * along with FlutterFFmpeg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
+import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ffmpeg/log.dart';
 import 'package:flutter_ffmpeg/stream_information.dart';
@@ -76,115 +79,122 @@ class HttpsTab {
       ffprint("Testing HTTPS with url '$testUrl'.");
     }
 
-    // HTTPS COMMAND ARGUMENTS
-    getMediaInformation(testUrl).then((information) {
-      if (information.getMediaProperties() != null) {
-        ffprint("---");
-        Map<dynamic, dynamic> mediaProperties =
-            information.getMediaProperties()!;
-        if (mediaProperties.containsKey('filename')) {
-          ffprint('Path: ${mediaProperties['filename']}');
-        }
-        if (mediaProperties.containsKey('format_name')) {
-          ffprint("Format: " + mediaProperties['format_name']);
-        }
-        if (mediaProperties.containsKey('bit_rate')) {
-          ffprint("Bitrate: " + mediaProperties['bit_rate']);
-        }
-        if (mediaProperties.containsKey('duration')) {
-          ffprint("Duration: " + mediaProperties['duration']);
-        }
-        if (mediaProperties.containsKey('start_time')) {
-          ffprint("Start time: " + mediaProperties['start_time']);
-        }
-        if (mediaProperties.containsKey('nb_streams')) {
-          ffprint(
-              "Number of streams: " + mediaProperties['nb_streams'].toString());
-        }
-        Map<dynamic, dynamic>? tags = mediaProperties['tags'];
-        if (tags != null) {
-          tags.forEach((key, value) {
-            ffprint("Tag: " + key + ":" + value);
-          });
-        }
+    getVideoFile().then((File videoFile) {
+      // HTTPS COMMAND ARGUMENTS
+      getMediaInformation(videoFile.path).then((information) {
+        if (information.getMediaProperties() != null) {
+          ffprint("---");
+          Map<dynamic, dynamic> mediaProperties =
+              information.getMediaProperties()!;
+          if (mediaProperties.containsKey('filename')) {
+            ffprint('Path: ${mediaProperties['filename']}');
+          }
+          if (mediaProperties.containsKey('format_name')) {
+            ffprint("Format: " + mediaProperties['format_name']);
+          }
+          if (mediaProperties.containsKey('bit_rate')) {
+            ffprint("Bitrate: " + mediaProperties['bit_rate']);
+          }
+          if (mediaProperties.containsKey('duration')) {
+            ffprint("Duration: " + mediaProperties['duration']);
+          }
+          if (mediaProperties.containsKey('start_time')) {
+            ffprint("Start time: " + mediaProperties['start_time']);
+          }
+          if (mediaProperties.containsKey('nb_streams')) {
+            ffprint("Number of streams: " +
+                mediaProperties['nb_streams'].toString());
+          }
+          Map<dynamic, dynamic>? tags = mediaProperties['tags'];
+          if (tags != null) {
+            tags.forEach((key, value) {
+              ffprint("Tag: " + key + ":" + value);
+            });
+          }
 
-        List<StreamInformation>? streams = information.getStreams();
-        if (streams != null) {
-          for (var i = 0; i < streams.length; ++i) {
-            StreamInformation stream = streams[i];
-            ffprint("---");
-            Map<dynamic, dynamic> streamProperties = stream.getAllProperties();
-            if (streamProperties.containsKey('index')) {
-              ffprint("Stream index: " + streamProperties['index'].toString());
-            }
-            if (streamProperties.containsKey('codec_type')) {
-              ffprint("Stream type: " + streamProperties['codec_type']);
-            }
-            if (streamProperties.containsKey('codec_name')) {
-              ffprint("Stream codec: " + streamProperties['codec_name']);
-            }
-            if (streamProperties.containsKey('codec_long_name')) {
-              ffprint(
-                  "Stream full codec: " + streamProperties['codec_long_name']);
-            }
-            if (streamProperties.containsKey('pix_fmt')) {
-              ffprint("Stream format: " + streamProperties['pix_fmt']);
-            }
-            if (streamProperties.containsKey('width')) {
-              ffprint("Stream width: " + streamProperties['width'].toString());
-            }
-            if (streamProperties.containsKey('height')) {
-              ffprint(
-                  "Stream height: " + streamProperties['height'].toString());
-            }
-            if (streamProperties.containsKey('bit_rate')) {
-              ffprint("Stream bitrate: " + streamProperties['bit_rate']);
-            }
-            if (streamProperties.containsKey('sample_rate')) {
-              ffprint("Stream sample rate: " + streamProperties['sample_rate']);
-            }
-            if (streamProperties.containsKey('sample_fmt')) {
-              ffprint(
-                  "Stream sample format: " + streamProperties['sample_fmt']);
-            }
-            if (streamProperties.containsKey('channel_layout')) {
-              ffprint("Stream channel layout: " +
-                  streamProperties['channel_layout']);
-            }
-            if (streamProperties.containsKey('sample_aspect_ratio')) {
-              ffprint("Stream sample aspect ratio: " +
-                  streamProperties['sample_aspect_ratio']);
-            }
-            if (streamProperties.containsKey('display_aspect_ratio')) {
-              ffprint("Stream display aspect ratio: " +
-                  streamProperties['display_aspect_ratio']);
-            }
-            if (streamProperties.containsKey('avg_frame_rate')) {
-              ffprint("Stream average frame rate: " +
-                  streamProperties['avg_frame_rate']);
-            }
-            if (streamProperties.containsKey('r_frame_rate')) {
-              ffprint("Stream real frame rate: " +
-                  streamProperties['r_frame_rate']);
-            }
-            if (streamProperties.containsKey('time_base')) {
-              ffprint("Stream time base: " + streamProperties['time_base']);
-            }
-            if (streamProperties.containsKey('codec_time_base')) {
-              ffprint("Stream codec time base: " +
-                  streamProperties['codec_time_base']);
-            }
+          List<StreamInformation>? streams = information.getStreams();
+          if (streams != null) {
+            for (var i = 0; i < streams.length; ++i) {
+              StreamInformation stream = streams[i];
+              ffprint("---");
+              Map<dynamic, dynamic> streamProperties =
+                  stream.getAllProperties();
+              if (streamProperties.containsKey('index')) {
+                ffprint(
+                    "Stream index: " + streamProperties['index'].toString());
+              }
+              if (streamProperties.containsKey('codec_type')) {
+                ffprint("Stream type: " + streamProperties['codec_type']);
+              }
+              if (streamProperties.containsKey('codec_name')) {
+                ffprint("Stream codec: " + streamProperties['codec_name']);
+              }
+              if (streamProperties.containsKey('codec_long_name')) {
+                ffprint("Stream full codec: " +
+                    streamProperties['codec_long_name']);
+              }
+              if (streamProperties.containsKey('pix_fmt')) {
+                ffprint("Stream format: " + streamProperties['pix_fmt']);
+              }
+              if (streamProperties.containsKey('width')) {
+                ffprint(
+                    "Stream width: " + streamProperties['width'].toString());
+              }
+              if (streamProperties.containsKey('height')) {
+                ffprint(
+                    "Stream height: " + streamProperties['height'].toString());
+              }
+              if (streamProperties.containsKey('bit_rate')) {
+                ffprint("Stream bitrate: " + streamProperties['bit_rate']);
+              }
+              if (streamProperties.containsKey('sample_rate')) {
+                ffprint(
+                    "Stream sample rate: " + streamProperties['sample_rate']);
+              }
+              if (streamProperties.containsKey('sample_fmt')) {
+                ffprint(
+                    "Stream sample format: " + streamProperties['sample_fmt']);
+              }
+              if (streamProperties.containsKey('channel_layout')) {
+                ffprint("Stream channel layout: " +
+                    streamProperties['channel_layout']);
+              }
+              if (streamProperties.containsKey('sample_aspect_ratio')) {
+                ffprint("Stream sample aspect ratio: " +
+                    streamProperties['sample_aspect_ratio']);
+              }
+              if (streamProperties.containsKey('display_aspect_ratio')) {
+                ffprint("Stream display aspect ratio: " +
+                    streamProperties['display_aspect_ratio']);
+              }
+              if (streamProperties.containsKey('avg_frame_rate')) {
+                ffprint("Stream average frame rate: " +
+                    streamProperties['avg_frame_rate']);
+              }
+              if (streamProperties.containsKey('r_frame_rate')) {
+                ffprint("Stream real frame rate: " +
+                    streamProperties['r_frame_rate']);
+              }
+              if (streamProperties.containsKey('time_base')) {
+                ffprint("Stream time base: " + streamProperties['time_base']);
+              }
+              if (streamProperties.containsKey('codec_time_base')) {
+                ffprint("Stream codec time base: " +
+                    streamProperties['codec_time_base']);
+              }
 
-            Map<dynamic, dynamic>? tags = streamProperties['tags'];
-            if (tags != null) {
-              tags.forEach((key, value) {
-                ffprint("Stream tag: " + key + ":" + value);
-              });
+              Map<dynamic, dynamic>? tags = streamProperties['tags'];
+              if (tags != null) {
+                tags.forEach((key, value) {
+                  ffprint("Stream tag: " + key + ":" + value);
+                });
+              }
             }
           }
         }
-      }
+      });
     });
+
     _refreshable.refresh();
   }
 
@@ -195,4 +205,14 @@ class HttpsTab {
   void dispose() {
     _urlText.dispose();
   }
+}
+
+Future<File> getVideoFile() async {
+  final String video = "video.mp4";
+  Directory documentsDirectory = await VideoUtil.documentsDirectory;
+
+  //画像から作成した動画の保存場所
+  return File("${documentsDirectory.path}/$video");
+  // return File(
+  //     '/Users/hasegawaitsuki/ghq/github.com/maropook/ffmpeg_flutter_test/assets/video.mp4');
 }
