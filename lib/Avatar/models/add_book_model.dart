@@ -30,28 +30,6 @@ class AddBookModel extends ChangeNotifier {
   String? salesDate;
 
   /// count の更新メソッド
-  Future<void> increment() async {
-    //getZipcode();
-    // getYahooHttp();
-    // deleteBookDio(46);
-    //editBookDio(47);
-    //nogetBookListDio();
-
-    while (true) {
-      await Future.delayed(Duration(seconds: 3));
-      notifyListeners();
-    }
-  }
-
-  void setTitle(String title) {
-    this.title = title;
-    notifyListeners();
-  }
-
-  void setAuthor(String author) {
-    this.author = author;
-    notifyListeners();
-  }
 
   bool isLoading = false;
 
@@ -64,8 +42,6 @@ class AddBookModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
-
-  String apiURL = "http://localhost:8000/book/book/";
 
   var addbook = {
     'title': "入力する値",

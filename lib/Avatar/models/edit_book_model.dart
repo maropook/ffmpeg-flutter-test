@@ -21,14 +21,6 @@ class EditBookModel extends ChangeNotifier {
     salesDateController.text = bookdetail.salesDate;
   }
 
-  /// 初期値
-  int count = 0;
-  String address = "アドレス";
-  String res = "";
-  String strtmp = "";
-  BookStruct? books;
-
-  int editBookId = 0;
   final authorController = TextEditingController();
   final titleController = TextEditingController();
   final authorKanaController = TextEditingController();
@@ -45,12 +37,16 @@ class EditBookModel extends ChangeNotifier {
   String? salesDate;
 
   /// count の更新メソッド
-  Future<void> increment() async {
-    count++;
-    while (true) {
-      await Future.delayed(Duration(seconds: 3));
-      notifyListeners();
-    }
+  bool isLoading = false;
+
+  void startLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  void endLoading() {
+    isLoading = false;
+    notifyListeners();
   }
 
   void setTitle(String title) {
@@ -65,7 +61,7 @@ class EditBookModel extends ChangeNotifier {
 
   String apiURL = "http://localhost:8000/book/book/";
 
-  void editBookDio() async {
+  Future<void> editBookDio() async {
     //dioを使ったapi操作 responseはデコードされたmapを返す
     //
     this.bookId = bookdetail.bookId;

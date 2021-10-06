@@ -23,10 +23,6 @@ class CountModel extends ChangeNotifier {
   // }
 
   /// 初期値
-  int count = 0;
-  String address = "アドレス";
-  String res = "";
-  String strtmp = "";
   BookStruct? books;
 
   final authorController = TextEditingController();
@@ -44,26 +40,12 @@ class CountModel extends ChangeNotifier {
   String? salesDate;
 
   /// count の更新メソッド
-  Future<void> increment() async {
-    count++;
-    changeText();
+  Future<void> getBookList() async {
     getBookListDio();
     getBookListHttp();
-    //getZipcode();
-    // getYahooHttp();
-    // deleteBookDio(46);
-    //editBookDio(47);
-    //nogetBookListDio();
-
     while (true) {
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 1));
       notifyListeners();
-    }
-  }
-
-  void changeText() {
-    if (count > 5) {
-      address = "5以上";
     }
   }
 
@@ -77,7 +59,7 @@ class CountModel extends ChangeNotifier {
     )
         .then((response) {
       print(response.data);
-      increment();
+      getBookList();
       return response.data;
     }).catchError((err) {
       print(err);

@@ -13,16 +13,16 @@ class ApiTop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<CountModel>(
-        create: (context) => CountModel()..increment(),
+        create: (context) => CountModel()..getBookList(),
         child: ChangeNotifierProvider<AddBookModel>(
             create: (_) => AddBookModel(),
             child: Consumer<CountModel>(
                 builder: (context, model, child) => Scaffold(
                     appBar: AppBar(
-                      title: Text('書籍管理システム'),
+                      title: const Text('Avatar管理'),
                     ),
                     body: Container(
-                      child: BookLists(),
+                      child: const BookLists(),
                     ),
                     floatingActionButton:
                         Consumer<CountModel>(builder: (context, model, child) {
@@ -36,95 +36,46 @@ class ApiTop extends StatelessWidget {
                               ));
 
                           if (added != null && added) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                backgroundColor: Colors.green,
-                                content: Text("本を追加しました")));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    backgroundColor: Colors.green,
+                                    content: Text("本を追加しました")));
                           }
                           model.getBookListHttp();
                         },
-                        child: Icon(Icons.add),
+                        child: const Icon(Icons.add),
                       );
                     })))));
   }
 }
 
-class CountText extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      '${Provider.of<CountModel>(context).count}',
-      style: Theme.of(context).textTheme.headline4,
-    );
-  }
-}
-
-class PostCode extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      /// context からModelの値が使える
-      '${Provider.of<CountModel>(context).address}',
-      style: Theme.of(context).textTheme.headline4,
-    );
-  }
-}
-
-class PostcodeAddress extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<CountModel>(builder: (context, model, child) {
-      return Text(
-        /// context からModelの値が使える
-        '${model.strtmp}',
-        style: Theme.of(context).textTheme.headline4,
-      );
-    });
-  }
-}
-
 class BookLists extends StatelessWidget {
+  const BookLists({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CountModel>(builder: (context, model, child) {
       final BookStruct? bookse = model.books;
 
       if (bookse == null) {
-        return CircularProgressIndicator();
+        return const CircularProgressIndicator();
       }
 
-      return Container(
+      return SizedBox(
         width: double.infinity,
         child: ListView.builder(
           itemCount: bookse.count,
           itemBuilder: (context, index) {
             return Slidable(
-              actionPane: SlidableDrawerActionPane(),
+              actionPane: const SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
               child: Container(
                 color: Colors.white,
                 child: ListTile(
-                  // leading: CircleAvatar(
-                  //   backgroundColor: Colors.indigoAccent,
-                  //   child: Text('dd'),
-                  //   foregroundColor: Colors.white,
-                  // ),
-                  title: Text('${bookse.results[index].title}'),
-                  subtitle: Text('${bookse.results[index].author}'),
+                  title: Text(bookse.results[index].title),
+                  subtitle: Text(bookse.results[index].author),
                 ),
               ),
-              actions: <Widget>[
-                IconSlideAction(
-                  caption: 'Archive',
-                  color: Colors.blue,
-                  icon: Icons.archive,
-                  onTap: () => null,
-                ),
-                IconSlideAction(
-                    caption: 'Share',
-                    color: Colors.indigo,
-                    icon: Icons.share,
-                    onTap: () => null),
-              ],
               secondaryActions: <Widget>[
                 IconSlideAction(
                   caption: '編集',
@@ -151,8 +102,6 @@ class BookLists extends StatelessWidget {
                     caption: '削除',
                     color: Colors.red,
                     icon: Icons.delete,
-                    // model.deleteBookDio(bookse.results[index].bookId),
-
                     onTap: () async {
                       await showConfirmDialog(
                         context,
@@ -185,15 +134,15 @@ class BookLists extends StatelessWidget {
       barrierDismissible: false,
       builder: (_) {
         return AlertDialog(
-          title: Text("削除の確認"),
+          title: const Text("削除の確認"),
           content: Text("[${book.title}]を削除しますか"),
           actions: [
             TextButton(
-              child: Text("いいえ"),
+              child: const Text("いいえ"),
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: Text("はい"),
+              child: const Text("はい"),
               onPressed: () {
                 model.deleteBookDio(book.bookId);
                 Navigator.pop(context);

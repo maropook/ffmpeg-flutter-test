@@ -100,7 +100,17 @@ class EditBookPage extends StatelessWidget {
                   ),
                   ElevatedButton(
                       onPressed: () async {
-                        model.editBookDio();
+                        try {
+                          model.startLoading();
+                          await model.editBookDio();
+                          Navigator.pop(context);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.green,
+                              content: Text("${book.title}を更新しました")));
+                        } finally {
+                          model.endLoading();
+                        }
                       },
                       child: Text('更新する'))
                 ],
