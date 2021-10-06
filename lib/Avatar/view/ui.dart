@@ -12,11 +12,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class ApiTop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CountModel>(
-        create: (context) => CountModel()..getBookList(),
+    return ChangeNotifierProvider<BookModel>(
+        create: (context) => BookModel()..getBookList(),
         child: ChangeNotifierProvider<AddBookModel>(
             create: (_) => AddBookModel(),
-            child: Consumer<CountModel>(
+            child: Consumer<BookModel>(
                 builder: (context, model, child) => Scaffold(
                     appBar: AppBar(
                       title: const Text('Avatar管理'),
@@ -25,7 +25,7 @@ class ApiTop extends StatelessWidget {
                       child: const BookLists(),
                     ),
                     floatingActionButton:
-                        Consumer<CountModel>(builder: (context, model, child) {
+                        Consumer<BookModel>(builder: (context, model, child) {
                       return FloatingActionButton(
                         onPressed: () async {
                           final bool? added = await Navigator.push(
@@ -41,7 +41,7 @@ class ApiTop extends StatelessWidget {
                                     backgroundColor: Colors.green,
                                     content: Text("本を追加しました")));
                           }
-                          model.getBookListHttp();
+                          model.getBookListDio();
                         },
                         child: const Icon(Icons.add),
                       );
@@ -54,7 +54,7 @@ class BookLists extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CountModel>(builder: (context, model, child) {
+    return Consumer<BookModel>(builder: (context, model, child) {
       final BookStruct? bookse = model.books;
 
       if (bookse == null) {
@@ -95,7 +95,7 @@ class BookLists extends StatelessWidget {
                             salesDate: bookse.results[index].salesDate)),
                       ),
                     );
-                    model.getBookListHttp();
+                    model.getBookListDio();
                   },
                 ),
                 IconSlideAction(
@@ -127,9 +127,9 @@ class BookLists extends StatelessWidget {
   Future showConfirmDialog(
     BuildContext context,
     BookDetailStruct book,
-    CountModel model,
+    BookModel model,
   ) {
-    return showDialog(
+    return showDialog<dynamic>(
       context: context,
       barrierDismissible: false,
       builder: (_) {
@@ -146,7 +146,7 @@ class BookLists extends StatelessWidget {
               onPressed: () {
                 model.deleteBookDio(book.bookId);
                 Navigator.pop(context);
-                model.getBookListHttp();
+                model.getBookListDio();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
                     content: Text("${book.title}を削除しました")));

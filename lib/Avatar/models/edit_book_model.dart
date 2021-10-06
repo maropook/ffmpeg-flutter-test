@@ -73,9 +73,9 @@ class EditBookModel extends ChangeNotifier {
     this.salesDate = salesDateController.text;
 
     var response = await Dio()
-        .put(
+        .put<Map<String, dynamic>>(
       'http://localhost:8000/book/book/${bookId}/',
-      data: new FormData.fromMap({
+      data: FormData.fromMap({
         'title': title,
         'title_kana': titleKana,
         'author': author,

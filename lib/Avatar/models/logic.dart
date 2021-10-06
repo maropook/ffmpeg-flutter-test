@@ -10,18 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:ffmpeg_flutter_test/Avatar/json/BookStruct.dart';
 // import 'package:yahoo_api_flutter/lib/json/BookStruct.dart';
 
-class CountModel extends ChangeNotifier {
+class BookModel extends ChangeNotifier {
   //final BookDetailStruct bookdetail;
-
-  // CountModel(this.bookdetail) {
-  //   authorController.text = bookdetail.author;
-  //   titleController.text = bookdetail.title;
-  //   authorKanaController.text = bookdetail.authorKana;
-  //   titleKanaController.text = bookdetail.titleKana;
-  //   isbnController.text = bookdetail.isbn;
-  //   salesDateController.text = bookdetail.salesDate;
-  // }
-
   /// 初期値
   BookStruct? books;
 
@@ -42,60 +32,35 @@ class CountModel extends ChangeNotifier {
   /// count の更新メソッド
   Future<void> getBookList() async {
     getBookListDio();
-    getBookListHttp();
     while (true) {
-      await Future.delayed(Duration(seconds: 1));
+      await Future<dynamic>.delayed(const Duration(seconds: 1));
       notifyListeners();
     }
   }
 
   String apiURL = "http://localhost:8000/book/book/";
 
-  void deleteBookDio(id) async {
+  void deleteBookDio(int id) async {
     //dioを使ったapi操作 responseはデコードされたmapを返す．
-    var response = await Dio()
-        .delete(
+    final dynamic response = await Dio()
+        .delete<dynamic>(
       'http://localhost:8000/book/book/${id}/',
     )
-        .then((response) {
+        .then<dynamic>((response) {
       print(response.data);
       getBookList();
       return response.data;
-    }).catchError((err) {
+    }).catchError((dynamic err) {
       print(err);
       return null;
     });
-  }
-
-  void getBookListHttp() async {
-    var uri = Uri.parse('http://localhost:8000/book/book/');
-    http.Response res = await http.get(uri);
-    if (res.statusCode == 200) {
-      String data = Utf8Decoder(allowMalformed: true).convert(res.bodyBytes);
-      Map<String, dynamic> map = jsonDecode(data);
-      var book = BookStruct.fromJson(map);
-      print(book.count);
-
-      books = BookStruct.fromJson(map);
-
-      for (var i = 0; i < book.count; i++) {
-        print(book.results[i].title);
-      }
-
-      while (true) {
-        await Future.delayed(Duration(seconds: 3));
-        notifyListeners();
-      }
-    } else {
-      throw Exception('Failed to load post');
-    }
   }
 
   void getBookListDio() async {
     //dioを使ったapi操作 responseはデコードされたmapを返す．
     try {
       var response = await Dio().get('http://localhost:8000/book/book/');
-      var book = BookStruct.fromJson(response.data);
+      final book = BookStruct.fromJson(response.data);
 
       books = BookStruct.fromJson(response.data);
 
@@ -106,7 +71,7 @@ class CountModel extends ChangeNotifier {
       }
 
       while (true) {
-        await Future.delayed(Duration(seconds: 3));
+        await Future<dynamic>.delayed(Duration(seconds: 3));
         notifyListeners();
       }
     } catch (e) {
@@ -114,25 +79,44 @@ class CountModel extends ChangeNotifier {
     }
   }
 
-  void nogetBookListDio() async {
-    //dioを使ったapi操作 responseはデコードされたmapを返す．
-    try {
-      var response = await Dio().get('http://localhost:8000/book/book/');
-      final Map<String, dynamic> map =
-          new Map<String, dynamic>.from(response.data);
+  // void nogetBookListDio() async {
+  //   //dioを使ったapi操作 responseはデコードされたmapを返す．
+  //   try {
+  //     var response = await Dio().get('http://localhost:8000/book/book/');
+  //     final Map<String, dynamic> map =
+  //         new Map<String, dynamic>.from(response.data);
 
-      String nobook = map['results'][0]['title'];
-      for (var i = 0; i < map.length; i++) {
-        print(map['results'][i]['title']);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  //     String nobook = map['results'][0]['title'];
+  //     for (var i = 0; i < map.length; i++) {
+  //       print(map['results'][i]['title']);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
-  Future<void> requestAddCoder(String address) async {
-    List<Location> locations = await locationFromAddress(address);
-    print(locations.first.latitude);
-    print(locations.first.longitude); //緯度と経度
-  }
 }
+
+ // void getBookListHttp() async {
+  //   var uri = Uri.parse('http://localhost:8000/book/book/');
+  //   http.Response res = await http.get(uri);
+  //   if (res.statusCode == 200) {
+  //     String data = Utf8Decoder(allowMalformed: true).convert(res.bodyBytes);
+  //     Map<String, dynamic> map = jsonDecode(data);
+  //     var book = BookStruct.fromJson(map);
+  //     print(book.count);
+
+  //     books = BookStruct.fromJson(map);
+
+  //     for (var i = 0; i < book.count; i++) {
+  //       print(book.results[i].title);
+  //     }
+
+  //     while (true) {
+  //       await Future.delayed(Duration(seconds: 3));
+  //       notifyListeners();
+  //     }
+  //   } else {
+  //     throw Exception('Failed to load post');
+  //   }
+  // }

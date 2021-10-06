@@ -73,7 +73,7 @@ class AddBookModel extends ChangeNotifier {
       throw '発売日が入力されていません';
     }
     var response = await Dio()
-        .post(
+        .post<Map<String, dynamic>>(
       'http://localhost:8000/book/book/',
       data: new FormData.fromMap({
         'title': title,

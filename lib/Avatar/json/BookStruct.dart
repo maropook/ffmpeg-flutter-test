@@ -1,4 +1,3 @@
-// ignore: file_names
 import 'package:flutter/material.dart';
 
 class BookStruct {
@@ -14,9 +13,9 @@ class BookStruct {
       required this.results});
 
   BookStruct.fromJson(Map<String, dynamic> json) {
-    count = json['count'];
-    next = json['next'];
-    previous = json['previous'];
+    count = json['count'] as int;
+    next = json['next'] as Null;
+    previous = json['previous'] as Null;
     if (json['results'] != null) {
       results = <Results>[];
       json['results'].forEach((v) {
@@ -54,13 +53,13 @@ class Results {
       required this.salesDate});
 
   Results.fromJson(Map<String, dynamic> json) {
-    bookId = json['book_id'];
-    title = json['title'];
-    titleKana = json['title_kana'];
-    author = json['author'];
-    authorKana = json['author_kana'];
-    isbn = json['isbn'];
-    salesDate = json['sales_date'];
+    bookId = json['book_id'] as int;
+    title = json['title'] as String;
+    titleKana = json['title_kana'] as String;
+    author = json['author'] as String;
+    authorKana = json['author_kana'] as String;
+    isbn = json['isbn'] as String;
+    salesDate = json['sales_date'] as String;
   }
 
   Map<String, dynamic> toJson() {
