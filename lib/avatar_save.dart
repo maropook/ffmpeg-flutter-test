@@ -53,6 +53,24 @@ class FirstScreenState extends State<AvatarFirst> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            if (stopImageFile == null)
+              Container()
+            else
+              Image.memory(
+                //変更
+                stopImageFile!.readAsBytesSync(), //変更
+                height: 100.0,
+                width: 100.0,
+              ),
+            if (activeImageFile == null)
+              Container()
+            else
+              Image.memory(
+                //変更
+                activeImageFile!.readAsBytesSync(),
+                height: 100.0,
+                width: 100.0,
+              ),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -144,33 +162,37 @@ class FirstScreenState extends State<AvatarFirst> {
     );
   }
 
+  File? stopImageFile;
+  File? activeImageFile;
+
   static Future<String> get localPath async {
     final Directory directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
+  String now() {
+    final DateTime now = DateTime.now();
+    return '${now.year}-${now.month}-${now.day} ${now.hour}:${now.minute}:${now.second}.${now.millisecond}';
+  }
+
   String pass = 'aa';
-  // 画像をドキュメントへ保存する。
   // 引数にはカメラ撮影時にreturnされるFileオブジェクトを持たせる。
   Future<void> saveLocalActiveImage(File image) async {
     final String path = await localPath;
-    final String imagePath = '$path/${avatarName.text}active.png';
-    final File imageFile = File(imagePath);
-    // カメラで撮影した画像は撮影時用の一時的フォルダパスに保存されるため、
-    // その画像をドキュメントへ保存し直す。
-    await imageFile.writeAsBytes(await image.readAsBytes());
-    // もしくは
-    //await image.copy(imagePath);
-    // でもOK
-    activeImgPath.text = imagePath;
+    final String activeImagePath = '$path/${now()}active.png';
+    activeImageFile = File(activeImagePath);
+    await activeImageFile!.writeAsBytes(await image.readAsBytes());
+    activeImgPath.text = activeImagePath;
+    setState(() {});
   }
 
   Future<void> saveLocalStopImage(File image) async {
     final String path = await localPath;
-    final String imagePath = '$path/${avatarName.text}stop.png';
-    final File imageFile = File(imagePath);
-    await imageFile.writeAsBytes(await image.readAsBytes());
-    stopImgPath.text = imagePath;
+    final String stopImagePath = '$path/${now()}stop.png';
+    stopImageFile = File(stopImagePath);
+    await stopImageFile!.writeAsBytes(await image.readAsBytes());
+    stopImgPath.text = stopImagePath;
+    setState(() {});
   }
 
   static Future<File> loadLocalImage() async {
@@ -180,8 +202,6 @@ class FirstScreenState extends State<AvatarFirst> {
   }
 
   final ImagePicker picker = ImagePicker();
-// カメラまたはライブラリから画像を取得
-
   Future<void> _getAndSaveActiveImageFromDevice() async {
     final XFile? imageFile =
         await picker.pickImage(source: ImageSource.gallery);
