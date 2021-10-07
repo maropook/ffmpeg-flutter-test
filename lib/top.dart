@@ -9,9 +9,11 @@ import 'package:ffmpeg_flutter_test/Video/video_app.dart';
 import 'package:ffmpeg_flutter_test/Video/video_get.dart';
 import 'package:ffmpeg_flutter_test/VoiceRecoder/recorder_home_view.dart';
 import 'package:ffmpeg_flutter_test/avatar_home.dart';
+import 'package:ffmpeg_flutter_test/avatar_save.dart';
 import 'package:ffmpeg_flutter_test/db.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
+import 'package:ffmpeg_flutter_test/file_service.dart';
 import 'package:ffmpeg_flutter_test/top.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,21 +32,39 @@ class Top extends StatelessWidget {
         child: Column(
           children: [
             ElevatedButton(
-              child: Text('Avatar'), //localのdjangoで作ったapiと通信する
+              child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
               onPressed: () {
                 Navigator.push<dynamic>(
                     context,
                     MaterialPageRoute<dynamic>(
-                        builder: (context) => AcatarHomeWidget()));
+                        builder: (context) => AvatarSave()));
               },
             ),
+            // ElevatedButton(
+            //   child: Text('Avatar'), //localのdjangoで作ったapiと通信する
+            //   onPressed: () {
+            //     Navigator.push<dynamic>(
+            //         context,
+            //         MaterialPageRoute<dynamic>(
+            //             builder: (context) => AcatarHomeWidget()));
+            //   },
+            // ),
+            // ElevatedButton(
+            //   child: Text('dbTest'), //localのdjangoで作ったapiと通信する
+            //   onPressed: () {
+            //     Navigator.push<dynamic>(
+            //         context,
+            //         MaterialPageRoute<dynamic>(
+            //             builder: (context) => TopScreen()));
+            //   },
+            // ),
             ElevatedButton(
-              child: Text('dbTest'), //localのdjangoで作ったapiと通信する
+              child: Text('画像'), //localのdjangoで作ったapiと通信する
               onPressed: () {
                 Navigator.push<dynamic>(
                     context,
                     MaterialPageRoute<dynamic>(
-                        builder: (context) => TopScreen()));
+                        builder: (context) => ImagePickerView()));
               },
             ),
             // ElevatedButton(
@@ -64,15 +84,15 @@ class Top extends StatelessWidget {
             //   },
             // ),
             // SizedBox(height: 8),
-            ElevatedButton(
-              child: Text('api 書籍管理 /https,dio'), //localのdjangoで作ったapiと通信する
-              onPressed: () {
-                Navigator.push<dynamic>(
-                    context,
-                    MaterialPageRoute<dynamic>(
-                        builder: (context) => TopPage()));
-              },
-            ),
+            // ElevatedButton(
+            //   child: Text('api 書籍管理 /https,dio'), //localのdjangoで作ったapiと通信する
+            //   onPressed: () {
+            //     Navigator.push<dynamic>(
+            //         context,
+            //         MaterialPageRoute<dynamic>(
+            //             builder: (context) => TopPage()));
+            //   },
+            // ),
             // SizedBox(height: 8),
             // ElevatedButton(
             //   child: Text('ネットにある動画再生するだけ/video_player'),
