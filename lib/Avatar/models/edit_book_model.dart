@@ -1,17 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:dio/dio.dart';
-
+import 'package:ffmpeg_flutter_test/Avatar/json/book_detail_struct.dart';
 import 'package:flutter/material.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookDetailStruct.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:http/http.dart' as http;
-
-import 'package:ffmpeg_flutter_test/Avatar/json/BookStruct.dart';
 
 class EditBookModel extends ChangeNotifier {
-  final BookDetailStruct bookdetail;
-
   EditBookModel(this.bookdetail) {
     authorController.text = bookdetail.author;
     titleController.text = bookdetail.title;
@@ -21,12 +13,14 @@ class EditBookModel extends ChangeNotifier {
     salesDateController.text = bookdetail.salesDate;
   }
 
-  final authorController = TextEditingController();
-  final titleController = TextEditingController();
-  final authorKanaController = TextEditingController();
-  final titleKanaController = TextEditingController();
-  final isbnController = TextEditingController();
-  final salesDateController = TextEditingController();
+  final BookDetailStruct bookdetail;
+
+  final TextEditingController authorController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController authorKanaController = TextEditingController();
+  final TextEditingController titleKanaController = TextEditingController();
+  final TextEditingController isbnController = TextEditingController();
+  final TextEditingController salesDateController = TextEditingController();
 
   int? bookId;
   String? title;
@@ -59,20 +53,19 @@ class EditBookModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String apiURL = "http://localhost:8000/book/book/";
+  String apiURL = 'http://localhost:8000/book/book/';
 
   Future<void> editBookDio() async {
     //dioを使ったapi操作 responseはデコードされたmapを返す
-    //
-    this.bookId = bookdetail.bookId;
-    this.author = authorController.text;
-    this.title = titleController.text;
-    this.authorKana = authorKanaController.text;
-    this.titleKana = titleKanaController.text;
-    this.isbn = isbnController.text;
-    this.salesDate = salesDateController.text;
+    bookId = bookdetail.bookId;
+    author = authorController.text;
+    title = titleController.text;
+    authorKana = authorKanaController.text;
+    titleKana = titleKanaController.text;
+    isbn = isbnController.text;
+    salesDate = salesDateController.text;
 
-    var response = await Dio()
+    final Map<String, dynamic>? response = await Dio()
         .put<Map<String, dynamic>>(
       'http://localhost:8000/book/book/${bookId}/',
       data: FormData.fromMap(<String, dynamic>{
@@ -84,12 +77,12 @@ class EditBookModel extends ChangeNotifier {
         'sales_date': salesDate,
       }),
     )
-        .then((response) {
-      print(response.data);
+        .then((Response<Map<String, dynamic>> response) {
+      debugPrint('${response.data}');
 
       return response.data;
     }).catchError((dynamic err) {
-      print(err);
+      debugPrint('$err');
       return null;
     });
   }

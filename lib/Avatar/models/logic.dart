@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookDetailStruct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_detail_struct.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:ffmpeg_flutter_test/Avatar/json/BookStruct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_struct.dart';
 // import 'package:yahoo_api_flutter/lib/json/BookStruct.dart';
 
 class BookModel extends ChangeNotifier {

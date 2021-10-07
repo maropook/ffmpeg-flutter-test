@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookDetailStruct.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookStruct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_detail_struct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_struct.dart';
 import 'package:ffmpeg_flutter_test/Avatar/models/add_book_model.dart';
 import 'package:ffmpeg_flutter_test/Avatar/models/logic.dart';
 import 'package:ffmpeg_flutter_test/Avatar/view/add_book_page.dart';

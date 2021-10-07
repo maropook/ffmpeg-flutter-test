@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookDetailStruct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_detail_struct.dart';
 import 'package:ffmpeg_flutter_test/Avatar/models/edit_book_model.dart';
 import 'package:provider/provider.dart';
 

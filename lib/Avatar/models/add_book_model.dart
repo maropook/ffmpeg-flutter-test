@@ -1,26 +1,19 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:dio/dio.dart';
-
+import 'package:ffmpeg_flutter_test/Avatar/json/book_struct.dart';
 import 'package:flutter/material.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookDetailStruct.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:http/http.dart' as http;
-
-import 'package:ffmpeg_flutter_test/Avatar/json/BookStruct.dart';
-// import 'package:yahoo_api_flutter/lib/json/BookStruct.dart';
 
 class AddBookModel extends ChangeNotifier {
   /// 初期値
 
   BookStruct? books;
 
-  final authorController = TextEditingController();
-  final titleController = TextEditingController();
-  final authorKanaController = TextEditingController();
-  final titleKanaController = TextEditingController();
-  final isbnController = TextEditingController();
-  final salesDateController = TextEditingController();
+  final TextEditingController authorController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController authorKanaController = TextEditingController();
+  final TextEditingController titleKanaController = TextEditingController();
+  final TextEditingController isbnController = TextEditingController();
+  final TextEditingController salesDateController = TextEditingController();
 
   String? title;
   String? titleKana;
@@ -28,8 +21,6 @@ class AddBookModel extends ChangeNotifier {
   String? authorKana;
   String? isbn;
   String? salesDate;
-
-  /// count の更新メソッド
 
   bool isLoading = false;
 
@@ -43,33 +34,24 @@ class AddBookModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  var addbook = {
-    'title': "入力する値",
-    'title_kana': "titleKana",
-    'author': "author",
-    'author_kana': "authorKana",
-    'isbn': "isbn",
-    'sales_date': "salesDate",
-  };
-
-  Future addBookDio() async {
+  Future<void> addBookDio() async {
     //dioを使ったapi操作 responseはデコードされたmapを返す．
-    if (title == null || title == "") {
+    if (title == null || title == '') {
       throw '本のタイトルが空です';
     }
-    if (author == null || author == "") {
+    if (author == null || author == '') {
       throw '著者が入力されていません';
     }
-    if (titleKana == null || titleKana == "") {
+    if (titleKana == null || titleKana == '') {
       throw '本のタイトルカタカナが空です';
     }
-    if (authorKana == null || authorKana == "") {
+    if (authorKana == null || authorKana == '') {
       throw '著者カタカナが入力されていません';
     }
-    if (isbn == null || isbn == "") {
+    if (isbn == null || isbn == '') {
       throw 'isbnコードが空です';
     }
-    if (salesDate == null || salesDate == "") {
+    if (salesDate == null || salesDate == '') {
       throw '発売日が入力されていません';
     }
     var response = await Dio()
@@ -84,12 +66,12 @@ class AddBookModel extends ChangeNotifier {
         'sales_date': salesDate,
       }),
     )
-        .then((response) {
-      print(response.data);
+        .then((Response<Map<String, dynamic>> response) {
+      debugPrint('${response.data}');
 
       return response.data;
     }).catchError((dynamic err) {
-      print(err);
+      debugPrint('$err');
       return null;
     });
   }
