@@ -20,8 +20,7 @@ analyzer:
     - lib/BookManagement/**
     - lib/Video/**
     - lib/VoiceRecoder/**
-    - lib/top.dart
-
+    # - lib/top.dart
 linter:
   rules:
     - always_declare_return_types
