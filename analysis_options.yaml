@@ -15,7 +15,11 @@ analyzer:
   exclude:
     - "bin/cache/**"
     - "dev/conductor/lib/proto/*"
-    # - lib/Avatar/**
+    - lib/Camera/**
+    - lib/ffmpeg/**
+    - lib/Video/**
+    - lib/VoiceRecoder/**
+    - liv/main.dart
 
 linter:
   rules:
