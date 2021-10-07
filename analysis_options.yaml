@@ -17,9 +17,10 @@ analyzer:
     - "dev/conductor/lib/proto/*"
     - lib/Camera/**
     - lib/ffmpeg/**
+    - lib/BookManagement/**
     - lib/Video/**
     - lib/VoiceRecoder/**
-    - liv/main.dart
+    - lib/top.dart
 
 linter:
   rules:

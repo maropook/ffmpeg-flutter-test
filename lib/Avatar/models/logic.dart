@@ -59,10 +59,11 @@ class BookModel extends ChangeNotifier {
   void getBookListDio() async {
     //dioを使ったapi操作 responseはデコードされたmapを返す．
     try {
-      var response = await Dio().get('http://localhost:8000/book/book/');
-      final book = BookStruct.fromJson(response.data);
+      var response =
+          await Dio().get<dynamic>('http://localhost:8000/book/book/');
+      final book = BookStruct.fromJson(response.data as Map<String, dynamic>);
 
-      books = BookStruct.fromJson(response.data);
+      books = BookStruct.fromJson(response.data as Map<String, dynamic>);
 
       print(book.count);
       for (var i = 0; i < book.count; i++) {

@@ -75,7 +75,7 @@ class EditBookModel extends ChangeNotifier {
     var response = await Dio()
         .put<Map<String, dynamic>>(
       'http://localhost:8000/book/book/${bookId}/',
-      data: FormData.fromMap({
+      data: FormData.fromMap(<String, dynamic>{
         'title': title,
         'title_kana': titleKana,
         'author': author,
@@ -88,7 +88,7 @@ class EditBookModel extends ChangeNotifier {
       print(response.data);
 
       return response.data;
-    }).catchError((err) {
+    }).catchError((dynamic err) {
       print(err);
       return null;
     });
