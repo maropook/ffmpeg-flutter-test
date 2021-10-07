@@ -12,6 +12,24 @@ class Constants {
   final String tableName = 'avatar';
 }
 
+class Avatar {
+  Avatar({
+    required int id,
+    required String name,
+    required String activeImagePath,
+    required String stopImagePath,
+  }) {
+    _id = id;
+    _activeImagePath = activeImagePath;
+    _stopImagePath = stopImagePath;
+    _name = name;
+  }
+  late int _id;
+  late String _name;
+  late String _activeImagePath;
+  late String _stopImagePath;
+}
+
 class AvatarSave extends StatelessWidget {
   const AvatarSave({Key? key}) : super(key: key);
 
@@ -106,17 +124,11 @@ class FirstScreenState extends State<AvatarFirst> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  if (avatarName.text == '') {
-                    return;
-                  }
                   _getAndSaveActiveImageFromDevice();
                 },
                 child: const Text('active画像を選択')),
             ElevatedButton(
                 onPressed: () {
-                  if (avatarName.text == '') {
-                    return;
-                  }
                   _getAndSaveStopImageFromDevice();
                 },
                 child: const Text('stop画像を選択')),
@@ -243,12 +255,12 @@ class FirstScreenState extends State<AvatarFirst> {
 
     /// 保存するデータの用意
     final String activeImagePath = activeImgPath.text;
-    final String email = stopImgPath.text;
-    final String phone = avatarName.text;
+    final String stopImagePath = stopImgPath.text;
+    final String name = avatarName.text;
 
     /// SQL文
     final String query =
-        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeImagePath", "$email", "$phone")';
+        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeImagePath", "$stopImagePath", "$name")';
 
     final Database db = await openDatabase(path, version: Constants().dbVersion,
         onCreate: (Database db, int version) async {
@@ -280,6 +292,7 @@ class AvatarSecond extends StatefulWidget {
 
 class SecondScreenState extends State<AvatarSecond> {
   final List<String> _urls = <String>[];
+  final List<Avatar> avatarList = <Avatar>[];
 
   @override
   void initState() {
@@ -310,12 +323,14 @@ class SecondScreenState extends State<AvatarSecond> {
     for (final Map<String, Object?> item in result) {
       final String resultsFilePath = item['activeImagePath']! as String;
       resultsFile = File(resultsFilePath);
+      print('$item[id]');
       _urls.add(item['activeImagePath']! as String);
-
-      // list.add(ListTile(
-      //   title: Text(item['activeImagePath']! as String),
-      //   subtitle: Text(item['stopImagePath']!  + item['name'] + '$sum' as String),
-      // ));
+      Avatar _avatar = Avatar(
+          activeImagePath: item['activeImagePath']! as String,
+          id: item['id']! as int,
+          stopImagePath: item['stopImagePath']! as String,
+          name: item['name']! as String);
+      avatarList.add(_avatar);
     }
 
     /// ウィジェットの更新
@@ -333,13 +348,24 @@ class SecondScreenState extends State<AvatarSecond> {
           SliverList(
               delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              return Image.memory(
-                File(_urls[index]).readAsBytesSync(),
-                height: 100.0,
-                width: 100.0,
+              return Column(
+                children: [
+                  Text('active画像'),
+                  Image.memory(
+                    File(avatarList[index]._activeImagePath).readAsBytesSync(),
+                    height: 100.0,
+                    width: 100.0,
+                  ),
+                  Text('stop画像'),
+                  Image.memory(
+                    File(avatarList[index]._stopImagePath).readAsBytesSync(),
+                    height: 100.0,
+                    width: 100.0,
+                  ),
+                ],
               );
             },
-            childCount: _urls.length,
+            childCount: avatarList.length,
           ))
           // ListView(
           //   children: ,
