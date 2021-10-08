@@ -18,6 +18,9 @@ class Avatar {
   String get activeImagePath => _activeImagePath;
   String get stopImagePath => _stopImagePath;
 
+  String get name => _name;
+  int get id => _id;
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': _id,
