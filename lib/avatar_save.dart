@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -15,33 +16,6 @@ class Constants {
   final String dbName = 'sqflite.db';
   final int dbVersion = 1;
   final String tableName = 'avatar';
-}
-
-class Avatar {
-  Avatar({
-    required int id,
-    required String name,
-    required String activeImagePath,
-    required String stopImagePath,
-  }) {
-    _id = id;
-    _activeImagePath = activeImagePath;
-    _stopImagePath = stopImagePath;
-    _name = name;
-  }
-  late int _id;
-  late String _name;
-  late String _activeImagePath;
-  late String _stopImagePath;
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': _id,
-      'name': _name,
-      'activeImagePath': _activeImagePath,
-      'stopImagePath': _stopImagePath,
-    };
-  }
 }
 
 class AvatarSave extends StatelessWidget {
@@ -88,9 +62,6 @@ class FirstScreenState extends State<AvatarFirst> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Input'),
-      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -99,7 +70,6 @@ class FirstScreenState extends State<AvatarFirst> {
               Container()
             else
               Image.memory(
-                //変更
                 activeImageFile!.readAsBytesSync(),
                 height: 100.0,
                 width: 100.0,
@@ -108,17 +78,10 @@ class FirstScreenState extends State<AvatarFirst> {
               Container()
             else
               Image.memory(
-                //変更
-                stopImageFile!.readAsBytesSync(), //変更
+                stopImageFile!.readAsBytesSync(),
                 height: 100.0,
                 width: 100.0,
               ),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '名前',
-              ),
-            ),
             TextField(
               controller: avatarName,
             ),
@@ -182,8 +145,6 @@ class FirstScreenState extends State<AvatarFirst> {
     return '${now.year}${now.month}${now.day}${now.hour}${now.minute}${now.second}${now.millisecond}';
   }
 
-  String pass = 'aa';
-  // 引数にはカメラ撮影時にreturnされるFileオブジェクトを持たせる。
   Future<void> saveLocalActiveImage(File image) async {
     final String path = await localPath;
     final String activeTime = '${now()}active.png';
@@ -202,12 +163,6 @@ class FirstScreenState extends State<AvatarFirst> {
     await stopImageFile!.writeAsBytes(await image.readAsBytes());
     stopImgPath.text = stopTime;
     setState(() {});
-  }
-
-  static Future<File> loadLocalImage() async {
-    final String path = await localPath;
-    final String imagePath = '$path/image.png';
-    return File(imagePath);
   }
 
   final ImagePicker picker = ImagePicker();
@@ -238,7 +193,6 @@ class FirstScreenState extends State<AvatarFirst> {
         avatarName.text == '' ||
         stopImgPath.text == '') {
       debugPrint('値を入力してください');
-
       return true;
     }
     return false;
@@ -265,25 +219,25 @@ class FirstScreenState extends State<AvatarFirst> {
           'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
     });
 
-    final Avatar avatar1 = Avatar(
-      id: 0,
-      activeImagePath: activeImgPath.text,
-      stopImagePath: stopImgPath.text,
-      name: avatarName.text,
-    );
+    // final Avatar avatar1 = Avatar(
+    //   id: 0,
+    //   activeImagePath: activeImgPath.text,
+    //   stopImagePath: stopImgPath.text,
+    //   name: avatarName.text,
+    // );
 
-    await db.insert(
-      'avatar',
-      avatar1.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    debugPrint('保存成功 ');
+    // await db.insert(
+    //   'avatar',
+    //   avatar1.toMap(),
+    //   conflictAlgorithm: ConflictAlgorithm.replace,
+    // );
+    // debugPrint('保存成功');
 
-    // /// SQL 実行
-    // await db.transaction((Transaction txn) async {
-    //   // final int id = await txn.rawInsert(query);
-    //   // debugPrint('保存成功 id: $id');
-    // });
+    /// SQL 実行
+    await db.transaction((Transaction txn) async {
+      final int id = await txn.rawInsert(query);
+      debugPrint('保存成功 id: $id');
+    });
 
     setState(() {
       activeImgPath.text = '';
@@ -304,25 +258,18 @@ class AvatarSecond extends StatefulWidget {
 
 class SecondScreenState extends State<AvatarSecond> {
   final List<Avatar> avatarList = <Avatar>[];
-
   late String localGetPath;
-
-  Future<void> localPathgetter() async {
-    localGetPath = await localPath;
-  }
 
   @override
   void initState() {
     super.initState();
-    localPathgetter();
     getItems();
   }
-
-  File? resultsFile;
 
   /// 保存したデータを取り出す
   Future<void> getItems() async {
     /// データベースのパスを取得
+    localGetPath = await localPath;
     final String dbFilePath = await getDatabasesPath();
     final String path = join(dbFilePath, Constants().dbName);
 
@@ -339,8 +286,8 @@ class SecondScreenState extends State<AvatarSecond> {
 
     /// データの取り出し
     for (final Map<String, Object?> item in result) {
-      final String resultsFilePath = item['activeImagePath']! as String;
-      resultsFile = File(resultsFilePath);
+      debugPrint('${result.length}');
+      debugPrint('$item');
       final Avatar _avatar = Avatar(
           activeImagePath: item['activeImagePath']! as String,
           id: item['id']! as int,
@@ -368,14 +315,14 @@ class SecondScreenState extends State<AvatarSecond> {
                 children: <Widget>[
                   const Text('active画像'),
                   Image.memory(
-                    File('$localGetPath/${avatarList[index]._activeImagePath}')
+                    File('$localGetPath/${avatarList[index].activeImagePath}')
                         .readAsBytesSync(),
                     height: 100.0,
                     width: 100.0,
                   ),
                   const Text('stop画像'),
                   Image.memory(
-                    File('$localGetPath/${avatarList[index]._stopImagePath}')
+                    File('$localGetPath/${avatarList[index].stopImagePath}')
                         .readAsBytesSync(),
                     height: 100.0,
                     width: 100.0,
@@ -385,9 +332,6 @@ class SecondScreenState extends State<AvatarSecond> {
             },
             childCount: avatarList.length,
           ))
-          // ListView(
-          //   children: ,
-          // ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
