@@ -227,6 +227,22 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
+          SliverList(
+              delegate: SliverChildListDelegate([
+            Column(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      getItems();
+                    },
+                    child: Text('更新')),
+                const Padding(
+                  padding: EdgeInsets.all(30.0),
+                  child: Text('アバターを選ぶ', textAlign: TextAlign.center),
+                ),
+              ],
+            ),
+          ])),
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200.0,
