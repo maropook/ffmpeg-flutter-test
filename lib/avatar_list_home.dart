@@ -4,6 +4,7 @@ import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_detail_home.dart';
 import 'package:ffmpeg_flutter_test/avatar_import_home.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
+import 'package:ffmpeg_flutter_test/generate_route.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -110,12 +111,10 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
 
                 return InkWell(
                   onTap: () async {
-                    await Navigator.push<bool>(
-                        context,
-                        MaterialPageRoute<bool>(
-                            builder: (BuildContext context) =>
-                                AvatarDetailHomeWidget(
-                                    avatar: avatarList[index])));
+                    AvatarDetailHomeArgs args =
+                        AvatarDetailHomeArgs(avatarList[index]);
+                    Navigator.of(context)
+                        .pushNamed('/avatar_detail', arguments: args);
 
                     getItems();
                   },

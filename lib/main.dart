@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:ffmpeg_flutter_test/avatar_list_home.dart';
+import 'package:ffmpeg_flutter_test/generate_route.dart';
 import 'package:ffmpeg_flutter_test/top.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,7 +28,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Top(),
+      routes: <String, WidgetBuilder>{
+        '/': (BuildContext context) => Top(),
+      },
+      onGenerateRoute: generateRoute,
     );
   }
 }

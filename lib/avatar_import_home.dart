@@ -15,11 +15,22 @@ class AvatarImportHomeWidget extends StatefulWidget {
 
 class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   final TextEditingController avatarName = TextEditingController();
-  File? stopImageFile;
-  File? activeImageFile;
   final ImagePicker picker = ImagePicker();
-  String activeTime = '';
-  String stopTime = '';
+  String activeImageName = '';
+  String stopImageName = '';
+
+  String? localFilePath;
+
+  @override
+  initState() {
+    super.initState();
+    getlocalFilePath();
+  }
+
+  Future<void> getlocalFilePath() async {
+    localFilePath = await localPath;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +39,19 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            if (activeImageFile == null)
+            if (activeImageName == '')
               Container()
             else
               Image.memory(
-                activeImageFile!.readAsBytesSync(),
+                File('$localFilePath/$activeImageName').readAsBytesSync(),
                 height: 100.0,
                 width: 100.0,
               ),
-            if (stopImageFile == null)
+            if (stopImageName == '')
               Container()
             else
               Image.memory(
-                stopImageFile!.readAsBytesSync(),
+                File('$localFilePath/$stopImageName').readAsBytesSync(),
                 height: 100.0,
                 width: 100.0,
               ),
@@ -90,19 +101,15 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   }
 
   Future<void> saveLocalActiveImage(File image) async {
-    final String path = await localPath;
-    activeTime = '${now()}active.png';
-    final String activeImagePath = '$path/$activeTime';
-    activeImageFile = File(activeImagePath);
-    await activeImageFile!.writeAsBytes(await image.readAsBytes());
+    activeImageName = '${now()}active.png';
+    await File('$localFilePath/$activeImageName')
+        .writeAsBytes(await image.readAsBytes());
   }
 
   Future<void> saveLocalStopImage(File image) async {
-    final String path = await localPath;
-    stopTime = '${now()}stop.png';
-    final String stopImagePath = '$path/$stopTime';
-    stopImageFile = File(stopImagePath);
-    await stopImageFile!.writeAsBytes(await image.readAsBytes());
+    stopImageName = '${now()}stop.png';
+    await File('$localFilePath/$stopImageName')
+        .writeAsBytes(await image.readAsBytes());
   }
 
   Future<void> _getAndSaveActiveImageFromDevice() async {
@@ -127,7 +134,7 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   }
 
   bool dataIsEmpty() {
-    if (activeTime == '' || avatarName.text == '' || stopTime == '') {
+    if (activeImageName == '' || avatarName.text == '' || stopImageName == '') {
       debugPrint('値を入力してください');
       return true;
     }
@@ -135,14 +142,11 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   }
 
   Future<void> _saveData() async {
-    /// データベースのパスを取得
     final String name = avatarName.text;
     final String dbFilePath = await getDatabasesPath();
     final String path = join(dbFilePath, Constants().dbName);
-
-    /// SQL文
     final String query =
-        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeTime", "$stopTime", "$name")';
+        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeImageName", "$stopImageName", "$name")';
 
     final Database db = await openDatabase(path, version: Constants().dbVersion,
         onCreate: (Database db, int version) async {
@@ -162,9 +166,7 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
 
   void resetData() {
     avatarName.text = '';
-    activeTime = '';
-    stopTime = '';
-    activeImageFile = null;
-    stopImageFile = null;
+    activeImageName = '';
+    stopImageName = '';
   }
 }

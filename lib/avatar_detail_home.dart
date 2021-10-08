@@ -2,33 +2,32 @@ import 'dart:io';
 
 import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
+import 'package:ffmpeg_flutter_test/generate_route.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AvatarDetailHomeWidget extends StatefulWidget {
-  AvatarDetailHomeWidget({Key? key, required Avatar avatar}) {
-    this.avatar = avatar;
+  AvatarDetailHomeWidget(AvatarDetailHomeArgs args, {Key? key})
+      : super(key: key) {
+    avatar = args.avatar;
   }
 
-  late Avatar avatar;
+  late final Avatar avatar;
 
   @override
-  AvatarDetailHomeWidgetState createState() =>
-      AvatarDetailHomeWidgetState(avatar);
+  AvatarDetailHomeWidgetState createState() => AvatarDetailHomeWidgetState();
 }
 
 class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
-  AvatarDetailHomeWidgetState(Avatar avatar) {
-    this.avatar = avatar;
-  }
-  late Avatar avatar;
+  AvatarDetailHomeWidgetState();
+  late Avatar _avatar;
   final TextEditingController avatarName = TextEditingController();
-
   String? localFilePath;
 
   @override
   initState() {
+    _avatar = widget.avatar;
     super.initState();
     getlocalFilePath();
   }
@@ -38,47 +37,34 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     setState(() {});
   }
 
-  Future<void> _updateData() async {
-    /// データベースのパスを取得
-    final String name = avatarName.text;
+  Future<Database> _getDatabase() async {
     final String dbFilePath = await getDatabasesPath();
     final String path = join(dbFilePath, Constants().dbName);
+    return openDatabase(path,
+        version: Constants().dbVersion,
+        onCreate: (Database db, int version) async {});
+  }
 
-    /// SQL文
+  Future<void> _updateData() async {
+    final String name = avatarName.text;
     final String query =
-        'UPDATE ${Constants().tableName} SET name = "$name" WHERE id = ${avatar.id}';
-
-    final Database db = await openDatabase(path, version: Constants().dbVersion,
-        onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
-    });
+        'UPDATE ${Constants().tableName} SET name = "$name" WHERE id = ${_avatar.id}';
+    final Database db = await _getDatabase();
 
     await db.transaction((Transaction txn) async {
       final int id = await txn.rawInsert(query);
       debugPrint('更新成功 id: $id');
     });
-
-    setState(() {});
   }
 
   Future<void> _deleteData(int id) async {
-    final String dbFilePath = await getDatabasesPath();
-    final String path = join(dbFilePath, Constants().dbName);
-
-    final Database db = await openDatabase(path, version: Constants().dbVersion,
-        onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
-    });
+    final Database db = await _getDatabase();
 
     await db.delete(
-      '${Constants().tableName}',
-      where: "id = ?",
-      whereArgs: [id],
+      Constants().tableName,
+      where: 'id = ?',
+      whereArgs: <int>[id],
     );
-
-    setState(() {});
   }
 
   @override
@@ -86,16 +72,22 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     return Scaffold(
         body: Column(
       children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height / 13,
+          child: const Text(
+            'アバターを選択',
+            style: TextStyle(fontSize: 30),
+          ),
+        ),
         if (localFilePath == null)
           Container()
         else
           Image.memory(
-            File('${localFilePath}/${avatar.activeImagePath}')
-                .readAsBytesSync(),
-            height: 100.0,
-            width: 100.0,
+            File('$localFilePath/${_avatar.activeImagePath}').readAsBytesSync(),
+            height: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width,
           ),
-        Text('${avatar.name}'),
+        Text(_avatar.name),
         TextField(
           controller: avatarName,
         ),
@@ -108,7 +100,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
         ),
         ElevatedButton(
           onPressed: () async {
-            await _deleteData(avatar.id);
+            await _deleteData(_avatar.id);
             Navigator.pop(context, true);
           },
           child: Text('削除'),
