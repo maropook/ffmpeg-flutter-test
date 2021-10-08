@@ -8,12 +8,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class AvatarDetailHomeWidgetArgs {
-  AvatarDetailHomeWidgetArgs(this.avatar);
-
-  final Avatar avatar;
-}
-
 class AvatarImportHomeWidget extends StatefulWidget {
   const AvatarImportHomeWidget({Key? key}) : super(key: key);
 
@@ -165,12 +159,16 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
     });
 
     setState(() {
-      avatarName.text = '';
-      activeTime = '';
-      stopTime = '';
-      activeImageFile = null;
-      stopImageFile = null;
+      resetData();
     });
+  }
+
+  void resetData() {
+    avatarName.text = '';
+    activeTime = '';
+    stopTime = '';
+    activeImageFile = null;
+    stopImageFile = null;
   }
 }
 
@@ -322,6 +320,19 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   late Avatar avatar;
   final TextEditingController avatarName = TextEditingController();
 
+  String? localFilePath;
+
+  @override
+  initState() {
+    super.initState();
+    getlocalFilePath();
+  }
+
+  Future<void> getlocalFilePath() async {
+    localFilePath = await localPath;
+    setState(() {});
+  }
+
   Future<void> _updateData() async {
     /// データベースのパスを取得
     final String name = avatarName.text;
@@ -371,6 +382,14 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     return Scaffold(
         body: Column(
       children: [
+        if (localFilePath == null)
+          Container()
+        else
+          Image.memory(
+            File('$localFilePath/${avatar.activeImagePath}').readAsBytesSync(),
+            height: 100.0,
+            width: 100.0,
+          ),
         Text('${avatar.name}'),
         TextField(
           controller: avatarName,
