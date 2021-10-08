@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:ffmpeg_flutter_test/avatar.dart';
+import 'package:ffmpeg_flutter_test/avatar_db_service.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
-import 'package:ffmpeg_flutter_test/generate_route.dart';
+import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,10 +25,13 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   late Avatar _avatar;
   final TextEditingController avatarName = TextEditingController();
   String? localFilePath;
+  late AvatarDBService _avatarDBService;
 
   @override
   initState() {
+    avatarName.text = widget.avatar.name;
     _avatar = widget.avatar;
+    _avatarDBService = AvatarDBService();
     super.initState();
     getlocalFilePath();
   }
@@ -37,19 +41,11 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     setState(() {});
   }
 
-  Future<Database> _getDatabase() async {
-    final String dbFilePath = await getDatabasesPath();
-    final String path = join(dbFilePath, Constants().dbName);
-    return openDatabase(path,
-        version: Constants().dbVersion,
-        onCreate: (Database db, int version) async {});
-  }
-
   Future<void> _updateData() async {
     final String name = avatarName.text;
     final String query =
         'UPDATE ${Constants().tableName} SET name = "$name" WHERE id = ${_avatar.id}';
-    final Database db = await _getDatabase();
+    final Database db = await _avatarDBService.getDatabase();
 
     await db.transaction((Transaction txn) async {
       final int id = await txn.rawInsert(query);
@@ -58,7 +54,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   }
 
   Future<void> _deleteData(int id) async {
-    final Database db = await _getDatabase();
+    final Database db = await _avatarDBService.getDatabase();
 
     await db.delete(
       Constants().tableName,
@@ -70,42 +66,48 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height / 13,
-          child: const Text(
-            'アバターを選択',
-            style: TextStyle(fontSize: 30),
+        body: SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 13,
+            child: const Text(
+              'アバターを選択',
+              style: TextStyle(fontSize: 30),
+            ),
           ),
-        ),
-        if (localFilePath == null)
-          Container()
-        else
-          Image.memory(
-            File('$localFilePath/${_avatar.activeImagePath}').readAsBytesSync(),
-            height: MediaQuery.of(context).size.width,
-            width: MediaQuery.of(context).size.width,
+          Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  await _updateData();
+                  Navigator.pop(context, true);
+                },
+                icon: Icon(Icons.update),
+              ),
+              IconButton(
+                onPressed: () async {
+                  await _deleteData(_avatar.id);
+                  Navigator.pop(context, true);
+                },
+                icon: Icon(Icons.delete),
+              ),
+            ],
           ),
-        Text(_avatar.name),
-        TextField(
-          controller: avatarName,
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            await _updateData();
-            Navigator.pop(context, true);
-          },
-          child: Text('更新'),
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            await _deleteData(_avatar.id);
-            Navigator.pop(context, true);
-          },
-          child: Text('削除'),
-        )
-      ],
+          if (localFilePath == null)
+            Container()
+          else
+            Image.memory(
+              File('$localFilePath/${_avatar.activeImagePath}')
+                  .readAsBytesSync(),
+              height: MediaQuery.of(context).size.width,
+              width: MediaQuery.of(context).size.width,
+            ),
+          TextField(
+            controller: avatarName,
+          ),
+        ],
+      ),
     ));
   }
 }

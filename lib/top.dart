@@ -40,6 +40,7 @@ class Top extends StatelessWidget {
                         builder: (context) => const AvatarListHomeWidget()));
               },
             ),
+
             // ElevatedButton(
             //   child: Text('Avatar'), //localのdjangoで作ったapiと通信する
             //   onPressed: () {
@@ -58,15 +59,15 @@ class Top extends StatelessWidget {
             //             builder: (context) => TopScreen()));
             //   },
             // ),
-            ElevatedButton(
-              child: Text('画像'), //localのdjangoで作ったapiと通信する
-              onPressed: () {
-                Navigator.push<dynamic>(
-                    context,
-                    MaterialPageRoute<dynamic>(
-                        builder: (context) => ImagePickerView()));
-              },
-            ),
+            // ElevatedButton(
+            //   child: Text('画像'), //localのdjangoで作ったapiと通信する
+            //   onPressed: () {
+            //     Navigator.push<dynamic>(
+            //         context,
+            //         MaterialPageRoute<dynamic>(
+            //             builder: (context) => ImagePickerView()));
+            //   },
+            // ),
             // ElevatedButton(
             //   child: Text('apisample'), //localのdjangoで作ったapiと通信する
             //   onPressed: () {

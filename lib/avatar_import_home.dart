@@ -118,8 +118,7 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
     if (imageFile == null) {
       return;
     }
-    await saveLocalActiveImage(File(imageFile.path)); //追加
-
+    await saveLocalActiveImage(File(imageFile.path));
     setState(() {});
   }
 

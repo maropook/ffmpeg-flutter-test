@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:ffmpeg_flutter_test/avatar.dart';
-import 'package:ffmpeg_flutter_test/avatar_detail_home.dart';
-import 'package:ffmpeg_flutter_test/avatar_import_home.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
-import 'package:ffmpeg_flutter_test/generate_route.dart';
+import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AvatarListHomeWidget extends StatefulWidget {
@@ -28,25 +24,20 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
     getItems();
   }
 
-  /// 保存したデータを取り出す
   Future<void> getItems() async {
     localFilePath = await localPath;
     final String dbFilePath = await getDatabasesPath();
     final String path = join(dbFilePath, Constants().dbName);
-
-    /// テーブルがなければ作成する
     final Database db = await openDatabase(path, version: Constants().dbVersion,
         onCreate: (Database db, int version) async {
       await db.execute(
           'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
     });
+
     final List<Map<String, Object?>> result =
         await db.rawQuery('SELECT * FROM ${Constants().tableName}');
-
-    /// データの取り出し
     avatarList.clear();
     for (final Map<String, Object?> item in result) {
-      debugPrint('${result.length}');
       debugPrint('$item');
       final Avatar _avatar = Avatar(
           activeImagePath: item['activeImagePath']! as String,
@@ -55,8 +46,6 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
           name: item['name']! as String);
       avatarList.add(_avatar);
     }
-
-    /// ウィジェットの更新
     setState(() {});
   }
 
@@ -66,14 +55,14 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
-              delegate: SliverChildListDelegate([
+              delegate: SliverChildListDelegate(<Widget>[
             Column(
-              children: [
+              children: <Widget>[
                 ElevatedButton(
                     onPressed: () {
                       getItems();
                     },
-                    child: Text('更新')),
+                    child: const Text('更新')),
                 const Padding(
                   padding: EdgeInsets.all(30.0),
                   child: Text('アバターを選ぶ', textAlign: TextAlign.center),
@@ -91,11 +80,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 if (index == avatarList.length) {
                   return InkWell(
                       onTap: () async {
-                        await Navigator.push<bool>(
-                            context,
-                            MaterialPageRoute<bool>(
-                                builder: (BuildContext context) =>
-                                    AvatarImportHomeWidget()));
+                        await Navigator.of(context).pushNamed('/avatar_import');
 
                         getItems();
                       },
@@ -104,16 +89,13 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                           child: Image.asset(
                             'assets/import_rect.png',
                             fit: BoxFit.contain,
-                            height: 100.0,
-                            width: 100.0,
                           )));
                 }
-
                 return InkWell(
                   onTap: () async {
-                    AvatarDetailHomeArgs args =
+                    final AvatarDetailHomeArgs args =
                         AvatarDetailHomeArgs(avatarList[index]);
-                    Navigator.of(context)
+                    await Navigator.of(context)
                         .pushNamed('/avatar_detail', arguments: args);
 
                     getItems();
