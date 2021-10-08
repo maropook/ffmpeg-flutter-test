@@ -113,30 +113,7 @@ class FirstScreenState extends State<AvatarFirst> {
                 height: 100.0,
                 width: 100.0,
               ),
-
-            // Align(
-            //   alignment: Alignment.centerLeft,
-            //   child: Text(
-            //     '画像のパス',
-            //     style: style2,
-            //   ),
-            // ),
-            // TextField(
-            //   controller: activeImgPath,
-            //   style: style1,
-            // ),
-            // Align(
-            //   alignment: Alignment.centerLeft,
-            //   child: Text(
-            //     '画像のパス2',
-            //     style: style2,
-            //   ),
-            // ),
-            // TextField(
-            //   controller: stopImgPath,
-            //   style: style1,
-            // ),
-            Align(
+            const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 '名前',
@@ -300,20 +277,14 @@ class FirstScreenState extends State<AvatarFirst> {
       avatar1.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    debugPrint('保存成功 ');
 
     // /// SQL 実行
     // await db.transaction((Transaction txn) async {
-    //   await db.insert(
-    //     'avatar',
-    //     avatar1.toMap(),
-    //     conflictAlgorithm: ConflictAlgorithm.replace,
-    //   );
     //   // final int id = await txn.rawInsert(query);
     //   // debugPrint('保存成功 id: $id');
-    //   debugPrint('保存成功 ');
     // });
 
-    /// ウィジェットの更新
     setState(() {
       activeImgPath.text = '';
       stopImgPath.text = '';
@@ -332,7 +303,6 @@ class AvatarSecond extends StatefulWidget {
 }
 
 class SecondScreenState extends State<AvatarSecond> {
-  final List<String> _urls = <String>[];
   final List<Avatar> avatarList = <Avatar>[];
 
   late String localGetPath;
@@ -371,9 +341,7 @@ class SecondScreenState extends State<AvatarSecond> {
     for (final Map<String, Object?> item in result) {
       final String resultsFilePath = item['activeImagePath']! as String;
       resultsFile = File(resultsFilePath);
-      print('$item[id]');
-      _urls.add(item['activeImagePath']! as String);
-      Avatar _avatar = Avatar(
+      final Avatar _avatar = Avatar(
           activeImagePath: item['activeImagePath']! as String,
           id: item['id']! as int,
           stopImagePath: item['stopImagePath']! as String,
@@ -397,15 +365,15 @@ class SecondScreenState extends State<AvatarSecond> {
               delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
               return Column(
-                children: [
-                  Text('active画像'),
+                children: <Widget>[
+                  const Text('active画像'),
                   Image.memory(
                     File('$localGetPath/${avatarList[index]._activeImagePath}')
                         .readAsBytesSync(),
                     height: 100.0,
                     width: 100.0,
                   ),
-                  Text('stop画像'),
+                  const Text('stop画像'),
                   Image.memory(
                     File('$localGetPath/${avatarList[index]._stopImagePath}')
                         .readAsBytesSync(),
@@ -424,9 +392,9 @@ class SecondScreenState extends State<AvatarSecond> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
+        // ignore: prefer_const_literals_to_create_immutables
         items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-              label: '追加', icon: const Icon(Icons.home)),
+          const BottomNavigationBarItem(label: '追加', icon: Icon(Icons.home)),
           const BottomNavigationBarItem(label: '一覧', icon: Icon(Icons.list))
         ],
         onTap: (int index) {
