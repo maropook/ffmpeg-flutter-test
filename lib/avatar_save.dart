@@ -38,7 +38,7 @@ class Avatar {
     return <String, dynamic>{
       'id': _id,
       'name': _name,
-      '_activeImagePath': _activeImagePath,
+      'activeImagePath': _activeImagePath,
       'stopImagePath': _stopImagePath,
     };
   }
@@ -295,23 +295,31 @@ class FirstScreenState extends State<AvatarFirst> {
       name: avatarName.text,
     );
 
-    /// SQL 実行
-    await db.transaction((Transaction txn) async {
-      // await db.insert(
-      //   'avatar',
-      //   avatar1.toMap(),
-      //   conflictAlgorithm: ConflictAlgorithm.replace,
-      // );
-      final int id = await txn.rawInsert(query);
-      debugPrint('保存成功 id: $id');
-      //debugPrint('保存成功 ');
-    });
+    await db.insert(
+      'avatar',
+      avatar1.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    // /// SQL 実行
+    // await db.transaction((Transaction txn) async {
+    //   await db.insert(
+    //     'avatar',
+    //     avatar1.toMap(),
+    //     conflictAlgorithm: ConflictAlgorithm.replace,
+    //   );
+    //   // final int id = await txn.rawInsert(query);
+    //   // debugPrint('保存成功 id: $id');
+    //   debugPrint('保存成功 ');
+    // });
 
     /// ウィジェットの更新
     setState(() {
       activeImgPath.text = '';
       stopImgPath.text = '';
       avatarName.text = '';
+      activeImageFile = null;
+      stopImageFile = null;
     });
   }
 }
