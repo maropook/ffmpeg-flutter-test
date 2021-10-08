@@ -67,8 +67,8 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
                 },
                 child: const Text('stop画像を選択')),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  Navigator.pop(context, true);
                 },
                 child: const Text('avatar一覧へ')),
           ],
@@ -252,12 +252,15 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
               (BuildContext context, int index) {
                 if (index == avatarList.length) {
                   return InkWell(
-                      onTap: () {
-                        Navigator.push<dynamic>(
-                            context,
-                            MaterialPageRoute<dynamic>(
-                                builder: (BuildContext context) =>
-                                    AvatarImportHomeWidget()));
+                      onTap: () async {
+                        final result = await Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute<bool>(
+                                    builder: (BuildContext context) =>
+                                        AvatarImportHomeWidget()))
+                            .then<void>((value) {
+                          getItems();
+                        });
                       },
                       child: Padding(
                           padding: const EdgeInsets.all(5.0),
@@ -270,13 +273,16 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 }
 
                 return InkWell(
-                  onTap: () {
-                    Navigator.push<dynamic>(
-                        context,
-                        MaterialPageRoute<dynamic>(
-                            builder: (BuildContext context) =>
-                                AvatarDetailHomeWidget(
-                                    avatar: avatarList[index])));
+                  onTap: () async {
+                    await Navigator.push<bool>(
+                            context,
+                            MaterialPageRoute<bool>(
+                                builder: (BuildContext context) =>
+                                    AvatarDetailHomeWidget(
+                                        avatar: avatarList[index])))
+                        .then<void>((value) {
+                      getItems();
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -315,8 +321,49 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     this.avatar = avatar;
   }
   late Avatar avatar;
+  final TextEditingController avatarName = TextEditingController();
+
+  Future<void> _updateData() async {
+    /// データベースのパスを取得
+    final String name = avatarName.text;
+    final String dbFilePath = await getDatabasesPath();
+    final String path = join(dbFilePath, Constants().dbName);
+
+    /// SQL文
+    final String query =
+        'UPDATE ${Constants().tableName} SET name = "$name" WHERE id = ${avatar.id}';
+
+    final Database db = await openDatabase(path, version: Constants().dbVersion,
+        onCreate: (Database db, int version) async {
+      await db.execute(
+          'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
+    });
+
+    await db.transaction((Transaction txn) async {
+      final int id = await txn.rawInsert(query);
+      debugPrint('更新成功 id: $id');
+    });
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Text('${avatar.name}'));
+    return Scaffold(
+        body: Column(
+      children: [
+        Text('${avatar.name}'),
+        TextField(
+          controller: avatarName,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            await _updateData();
+            Navigator.pop(context, true);
+          },
+          child: Text('更新'),
+        )
+      ],
+    ));
   }
 }
