@@ -27,21 +27,21 @@ class AvatarSave extends StatelessWidget {
       title: 'BottomNavigationBar App',
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => const AvatarImportHomeWidget(),
+        '/': (BuildContext context) => const AvatarFirst(),
         '/list': (BuildContext context) => const AvatarSecond(),
       },
     );
   }
 }
 
-class AvatarImportHomeWidget extends StatefulWidget {
-  const AvatarImportHomeWidget({Key? key}) : super(key: key);
+class AvatarFirst extends StatefulWidget {
+  const AvatarFirst({Key? key}) : super(key: key);
 
   @override
-  AvatarImportHomeWidgetState createState() => AvatarImportHomeWidgetState();
+  FirstScreenState createState() => FirstScreenState();
 }
 
-class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
+class FirstScreenState extends State<AvatarFirst> {
   final TextEditingController activeImgPath = TextEditingController();
   final TextEditingController stopImgPath = TextEditingController();
   final TextEditingController avatarName = TextEditingController();
@@ -140,9 +140,6 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   File? stopImageFile;
   File? activeImageFile;
 
-  String activeTime = '';
-  String stopTime = '';
-
   String now() {
     final DateTime now = DateTime.now();
     return '${now.year}${now.month}${now.day}${now.hour}${now.minute}${now.second}${now.millisecond}';
@@ -150,7 +147,7 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
 
   Future<void> saveLocalActiveImage(File image) async {
     final String path = await localPath;
-    activeTime = '${now()}active.png';
+    final String activeTime = '${now()}active.png';
     final String activeImagePath = '$path/$activeTime';
     activeImageFile = File(activeImagePath);
     await activeImageFile!.writeAsBytes(await image.readAsBytes());
@@ -160,7 +157,7 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
 
   Future<void> saveLocalStopImage(File image) async {
     final String path = await localPath;
-    stopTime = '${now()}stop.png';
+    final String stopTime = '${now()}stop.png';
     final String stopImagePath = '$path/$stopTime';
     stopImageFile = File(stopImagePath);
     await stopImageFile!.writeAsBytes(await image.readAsBytes());
@@ -192,7 +189,9 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   }
 
   bool dataIsEmpty() {
-    if (activeTime == '' || avatarName.text == '' || stopTime == '') {
+    if (activeImgPath.text == '' ||
+        avatarName.text == '' ||
+        stopImgPath.text == '') {
       debugPrint('値を入力してください');
       return true;
     }
@@ -202,13 +201,17 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
   /// データを保存する
   Future<void> _saveData() async {
     /// データベースのパスを取得
-    final String name = avatarName.text;
     final String dbFilePath = await getDatabasesPath();
     final String path = join(dbFilePath, Constants().dbName);
 
+    /// 保存するデータの用意
+    final String activeImagePath = activeImgPath.text;
+    final String stopImagePath = stopImgPath.text;
+    final String name = avatarName.text;
+
     /// SQL文
     final String query =
-        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeTime", "$stopTime", "$name")';
+        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeImagePath", "$stopImagePath", "$name")';
 
     final Database db = await openDatabase(path, version: Constants().dbVersion,
         onCreate: (Database db, int version) async {
@@ -216,15 +219,30 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
           'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
     });
 
+    // final Avatar avatar1 = Avatar(
+    //   id: 0,
+    //   activeImagePath: activeImgPath.text,
+    //   stopImagePath: stopImgPath.text,
+    //   name: avatarName.text,
+    // );
+
+    // await db.insert(
+    //   'avatar',
+    //   avatar1.toMap(),
+    //   conflictAlgorithm: ConflictAlgorithm.replace,
+    // );
+    // debugPrint('保存成功');
+
+    /// SQL 実行
     await db.transaction((Transaction txn) async {
       final int id = await txn.rawInsert(query);
       debugPrint('保存成功 id: $id');
     });
 
     setState(() {
+      activeImgPath.text = '';
+      stopImgPath.text = '';
       avatarName.text = '';
-      activeTime = '';
-      stopTime = '';
       activeImageFile = null;
       stopImageFile = null;
     });
