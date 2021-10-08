@@ -207,6 +207,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
         await db.rawQuery('SELECT * FROM ${Constants().tableName}');
 
     /// データの取り出し
+    avatarList.clear();
     for (final Map<String, Object?> item in result) {
       debugPrint('${result.length}');
       debugPrint('$item');
@@ -253,14 +254,13 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 if (index == avatarList.length) {
                   return InkWell(
                       onTap: () async {
-                        final result = await Navigator.push<bool>(
-                                context,
-                                MaterialPageRoute<bool>(
-                                    builder: (BuildContext context) =>
-                                        AvatarImportHomeWidget()))
-                            .then<void>((value) {
-                          getItems();
-                        });
+                        await Navigator.push<bool>(
+                            context,
+                            MaterialPageRoute<bool>(
+                                builder: (BuildContext context) =>
+                                    AvatarImportHomeWidget()));
+
+                        getItems();
                       },
                       child: Padding(
                           padding: const EdgeInsets.all(5.0),
@@ -275,14 +275,13 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 return InkWell(
                   onTap: () async {
                     await Navigator.push<bool>(
-                            context,
-                            MaterialPageRoute<bool>(
-                                builder: (BuildContext context) =>
-                                    AvatarDetailHomeWidget(
-                                        avatar: avatarList[index])))
-                        .then<void>((value) {
-                      getItems();
-                    });
+                        context,
+                        MaterialPageRoute<bool>(
+                            builder: (BuildContext context) =>
+                                AvatarDetailHomeWidget(
+                                    avatar: avatarList[index])));
+
+                    getItems();
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -347,6 +346,26 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     setState(() {});
   }
 
+  Future<void> _deleteData(int id) async {
+    /// データベースのパスを取得
+    final String dbFilePath = await getDatabasesPath();
+    final String path = join(dbFilePath, Constants().dbName);
+
+    final Database db = await openDatabase(path, version: Constants().dbVersion,
+        onCreate: (Database db, int version) async {
+      await db.execute(
+          'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
+    });
+
+    await db.delete(
+      '${Constants().tableName}',
+      where: "id = ?",
+      whereArgs: [id],
+    );
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -362,6 +381,13 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
             Navigator.pop(context, true);
           },
           child: Text('更新'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            await _deleteData(avatar.id);
+            Navigator.pop(context, true);
+          },
+          child: Text('削除'),
         )
       ],
     ));
