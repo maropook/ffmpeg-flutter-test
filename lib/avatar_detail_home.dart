@@ -82,50 +82,65 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.black,
         body: SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 13,
-            child: Row(
-              children: [
-                IconButton(
-                    onPressed: () async {
-                      if (_avatar.id != 0) {
-                        await _updateData();
-                      }
-
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    },
-                    icon: Icon(Icons.backspace)),
-                const Text(
-                  'アバターを選択',
-                  style: TextStyle(fontSize: 30),
+          child: Column(
+            children: <Widget>[
+              Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
                 ),
-              ],
-            ),
+                child: Padding(
+                  padding: const EdgeInsets.all(13.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            await _updateData();
+
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                          },
+                          icon: const Icon(
+                            Icons.backspace,
+                          )),
+                      const Text(
+                        'アバターを選ぶ',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 30),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          await _deleteData(_avatar.id);
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.all(10)),
+              if (localFilePath == null)
+                Container()
+              else
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Image.memory(
+                    File('$localFilePath/${_avatar.activeImagePath}')
+                        .readAsBytesSync(),
+                    height: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                ),
+              TextField(
+                controller: avatarName,
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () async {
-              await _deleteData(_avatar.id);
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.delete),
-          ),
-          if (localFilePath == null)
-            Container()
-          else
-            Image.memory(
-              File('$localFilePath/${_avatar.activeImagePath}')
-                  .readAsBytesSync(),
-              height: MediaQuery.of(context).size.width,
-              width: MediaQuery.of(context).size.width,
-            ),
-          TextField(
-            controller: avatarName,
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 }

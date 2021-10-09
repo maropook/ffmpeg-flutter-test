@@ -6,6 +6,7 @@ import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
 import 'package:ffmpeg_flutter_test/main.dart';
 import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -86,11 +87,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 ),
               ),
             ),
-            Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
-                height: 10)
+            Padding(padding: EdgeInsets.all(10)),
           ])),
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -102,7 +99,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 if (index == avatarList.length) {
                   return InkWell(
                       onTap: () async {
-                        showGeneralDialog(
+                        await showGeneralDialog(
                           barrierColor: Colors.black.withOpacity(0.3),
                           context: context,
                           pageBuilder: (context, animation1, animation2) {
@@ -134,9 +131,12 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                                         ),
                                         InkWell(
                                           onTap: () async {
-                                            await Navigator.of(context)
-                                                .pushNamed('/avatar_import');
-                                            getItems();
+                                            await _getAndSaveActiveImageFromDevice();
+                                            await _saveData();
+                                            Navigator.pop(context);
+                                            // Navigator.popUntil(
+                                            //     context, (_) => count++ >= 2);
+                                            //     .pushNamed('/avatar_import');
                                           },
                                           child: Image.asset(
                                             'assets/import.png',
@@ -156,6 +156,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                             );
                           },
                         );
+                        getItems();
                       },
                       child: Padding(
                           padding: const EdgeInsets.all(5),
@@ -229,5 +230,57 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
         ],
       ),
     );
+  }
+
+  final ImagePicker picker = ImagePicker();
+  String activeImageName = '';
+
+  Future<void> saveLocalActiveImage(File image) async {
+    activeImageName = '${now()}active.png';
+    await File('$localFilePath/$activeImageName')
+        .writeAsBytes(await image.readAsBytes());
+  }
+
+  Future<void> _getAndSaveActiveImageFromDevice() async {
+    final XFile? imageFile =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (imageFile == null) {
+      return;
+    }
+    await saveLocalActiveImage(File(imageFile.path));
+    setState(() {});
+  }
+
+  Future<void> _saveData() async {
+    final String dbFilePath = await getDatabasesPath();
+    final String path = join(dbFilePath, Constants().dbName);
+    final String query =
+        'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("$activeImageName", "", "")';
+
+    final Database db = await openDatabase(path, version: Constants().dbVersion,
+        onCreate: (Database db, int version) async {
+      await db.execute(
+          'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
+    });
+
+    late int id;
+
+    await db.transaction((Transaction txn) async {
+      id = await txn.rawInsert(query);
+      debugPrint('保存成功 id: $id');
+    });
+
+    List<Object?>? result =
+        await db.query('avatar', where: 'id = ?', whereArgs: [id]);
+
+    Map<String, dynamic> item = result[0] as Map<String, dynamic>;
+
+    selectedAvatar = Avatar(
+        activeImagePath: item['activeImagePath']! as String,
+        id: item['id']! as int,
+        stopImagePath: item['stopImagePath']! as String,
+        name: item['name']! as String);
+
+    setState(() {});
   }
 }

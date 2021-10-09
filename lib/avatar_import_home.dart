@@ -41,6 +41,19 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(13.0),
+                child: Text(
+                  'アバターをインポート',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 30),
+                ),
+              ),
+            ),
             if (activeImageName == '')
               Container()
             else
@@ -70,17 +83,12 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
                   _getAndSaveStopImageFromDevice();
                 },
                 child: const Text('stop画像を選択')),
-            ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                },
-                child: const Text('avatar一覧へ')),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save),
-        onPressed: () {
+        onPressed: () async {
           if (dataIsEmpty()) {
             showDialog<dynamic>(
                 context: context,
@@ -90,13 +98,9 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
                     ));
             return;
           }
-          _saveData();
-          showDialog<dynamic>(
-              context: context,
-              builder: (BuildContext context) => const AlertDialog(
-                    title: Text('保存しました'),
-                    content: Text('保存できました'),
-                  ));
+          await _saveData();
+          int count = 0;
+          Navigator.popUntil(context, (_) => count++ >= 2);
         },
       ),
     );
