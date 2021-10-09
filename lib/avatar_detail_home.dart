@@ -49,8 +49,21 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
 
     await db.transaction((Transaction txn) async {
       final int id = await txn.rawInsert(query);
-      debugPrint('更新成功 id: $id');
+      debugPrint('更新成功 id: ${_avatar.id}');
     });
+
+    List<Object?>? result =
+        await db.query('avatar', where: 'id = ?', whereArgs: [_avatar.id]);
+
+    Map<String, dynamic> item = result[0] as Map<String, dynamic>;
+
+    _avatar = Avatar(
+        activeImagePath: item['activeImagePath']! as String,
+        id: item['id']! as int,
+        stopImagePath: item['stopImagePath']! as String,
+        name: item['name']! as String);
+
+    debugPrint('${result[0]}');
   }
 
   Future<void> _deleteData(int id) async {
@@ -79,16 +92,20 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
           Row(
             children: [
               IconButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop(_avatar);
+                  },
+                  icon: Icon(Icons.home)),
+              IconButton(
                 onPressed: () async {
                   await _updateData();
-                  Navigator.pop(context, true);
                 },
                 icon: Icon(Icons.update),
               ),
               IconButton(
                 onPressed: () async {
                   await _deleteData(_avatar.id);
-                  Navigator.pop(context, true);
+                  Navigator.pop(context);
                 },
                 icon: Icon(Icons.delete),
               ),

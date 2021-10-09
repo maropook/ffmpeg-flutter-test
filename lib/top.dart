@@ -14,6 +14,7 @@ import 'package:ffmpeg_flutter_test/db.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
 import 'package:ffmpeg_flutter_test/file_service.dart';
+import 'package:ffmpeg_flutter_test/main.dart';
 import 'package:ffmpeg_flutter_test/top.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,6 +32,7 @@ class Top extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
+            Text('${initialAvatar.name}'),
             ElevatedButton(
               child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
               onPressed: () {

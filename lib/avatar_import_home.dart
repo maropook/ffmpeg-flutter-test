@@ -70,7 +70,7 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
                 child: const Text('stop画像を選択')),
             ElevatedButton(
                 onPressed: () async {
-                  Navigator.pop(context, true);
+                  Navigator.pop(context);
                 },
                 child: const Text('avatar一覧へ')),
           ],

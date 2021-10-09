@@ -1,17 +1,21 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_list_home.dart';
+import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
 import 'package:ffmpeg_flutter_test/generate_route.dart';
 import 'package:ffmpeg_flutter_test/top.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'Camera/camera_example_home.dart';
 
+late Avatar initialAvatar;
 Future<void> main() async {
   // Fetch the available cameras before initializing the app.
   try {
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
+    initialAvatar = await initialAvatarCreate();
   } on CameraException catch (e) {
     logError(e.code, e.description);
   }

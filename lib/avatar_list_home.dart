@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
+import 'package:ffmpeg_flutter_test/main.dart';
 import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -49,6 +50,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
     setState(() {});
   }
 
+  Avatar selectedAvatar = initialAvatar;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,12 +62,13 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
               children: <Widget>[
                 ElevatedButton(
                     onPressed: () {
-                      getItems();
+                      Navigator.of(context).pop();
                     },
-                    child: const Text('更新')),
-                const Padding(
+                    child: const Text('戻る')),
+                Padding(
                   padding: EdgeInsets.all(30.0),
-                  child: Text('アバターを選ぶ', textAlign: TextAlign.center),
+                  child: Text('${initialAvatar.name}',
+                      textAlign: TextAlign.center),
                 ),
               ],
             ),
@@ -95,10 +98,11 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                   onTap: () async {
                     final AvatarDetailHomeArgs args =
                         AvatarDetailHomeArgs(avatarList[index]);
-                    await Navigator.of(context)
-                        .pushNamed('/avatar_detail', arguments: args);
+                    initialAvatar = await Navigator.of(context)
+                        .pushNamed('/avatar_detail', arguments: args) as Avatar;
 
-                    getItems();
+                    await getItems();
+                    debugPrint('${initialAvatar.name}!!');
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
