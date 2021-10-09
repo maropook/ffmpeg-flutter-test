@@ -39,7 +39,7 @@ class AvatarInitial {
   }
 }
 
-Future<Avatar> initialAvatarCreate() async {
+Future<Avatar> selectedAvatarCreate() async {
   String activeImagePath =
       await AvatarInitial.assetToFile(AvatarInitial.initialActiveAvatar);
   String stopImagePath =
@@ -48,7 +48,7 @@ Future<Avatar> initialAvatarCreate() async {
       activeImagePath: AvatarInitial.initialActiveAvatar,
       stopImagePath: AvatarInitial.initialStopAvatar,
       name: '初期アバター',
-      id: 0);
+      id: 1);
 
   return avatar;
 }

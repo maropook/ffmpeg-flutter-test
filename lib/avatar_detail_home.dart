@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_db_service.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
+import 'package:ffmpeg_flutter_test/main.dart';
 import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -63,6 +64,8 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
         stopImagePath: item['stopImagePath']! as String,
         name: item['name']! as String);
 
+    selectedAvatar = _avatar;
+
     debugPrint('${result[0]}');
   }
 
@@ -84,32 +87,30 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
         children: <Widget>[
           SizedBox(
             height: MediaQuery.of(context).size.height / 13,
-            child: const Text(
-              'アバターを選択',
-              style: TextStyle(fontSize: 30),
+            child: Row(
+              children: [
+                IconButton(
+                    onPressed: () async {
+                      if (_avatar.id != 0) {
+                        await _updateData();
+                      }
+
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    icon: Icon(Icons.backspace)),
+                const Text(
+                  'アバターを選択',
+                  style: TextStyle(fontSize: 30),
+                ),
+              ],
             ),
           ),
-          Row(
-            children: [
-              IconButton(
-                  onPressed: () async {
-                    Navigator.of(context).pop(_avatar);
-                  },
-                  icon: Icon(Icons.home)),
-              IconButton(
-                onPressed: () async {
-                  await _updateData();
-                },
-                icon: Icon(Icons.update),
-              ),
-              IconButton(
-                onPressed: () async {
-                  await _deleteData(_avatar.id);
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.delete),
-              ),
-            ],
+          IconButton(
+            onPressed: () async {
+              await _deleteData(_avatar.id);
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.delete),
           ),
           if (localFilePath == null)
             Container()

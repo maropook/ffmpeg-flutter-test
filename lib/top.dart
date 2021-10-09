@@ -32,7 +32,7 @@ class Top extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text('${initialAvatar.name}'),
+            Text('${selectedAvatar.name}'),
             ElevatedButton(
               child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
               onPressed: () {

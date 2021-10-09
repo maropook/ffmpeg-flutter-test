@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
 import 'package:ffmpeg_flutter_test/main.dart';
@@ -35,9 +36,23 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
           'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
     });
 
-    final List<Map<String, Object?>> result =
+    List<Map<String, Object?>> result =
         await db.rawQuery('SELECT * FROM ${Constants().tableName}');
+
     avatarList.clear();
+
+    if (result.isEmpty) {
+      final String query =
+          'INSERT INTO ${Constants().tableName}(activeImagePath, stopImagePath, name) VALUES("${initialAvatar.activeImagePath}", "${initialAvatar.stopImagePath}", "${initialAvatar.name}")';
+
+      await db.transaction((Transaction txn) async {
+        int id = await txn.rawInsert(query);
+        debugPrint('初期データ保存成功 id: $id');
+      });
+      result = await db.rawQuery('SELECT * FROM ${Constants().tableName}');
+      getItems();
+    }
+
     for (final Map<String, Object?> item in result) {
       debugPrint('$item');
       final Avatar _avatar = Avatar(
@@ -50,33 +65,37 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
     setState(() {});
   }
 
-  Avatar selectedAvatar = initialAvatar;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
               delegate: SliverChildListDelegate(<Widget>[
-            Column(
-              children: <Widget>[
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('戻る')),
-                Padding(
-                  padding: EdgeInsets.all(30.0),
-                  child: Text('${initialAvatar.name}',
-                      textAlign: TextAlign.center),
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(13.0),
+                child: Text(
+                  'アバターを選ぶ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 30),
                 ),
-              ],
+              ),
             ),
+            Container(
+                decoration: const BoxDecoration(
+                  color: Colors.black,
+                ),
+                height: 10)
           ])),
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200.0,
-              mainAxisExtent: 200,
+              mainAxisExtent: 187,
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
@@ -88,32 +107,74 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                         getItems();
                       },
                       child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Image.asset(
-                            'assets/import_rect.png',
-                            fit: BoxFit.contain,
-                          )));
+                        padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                        child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: Image.asset(
+                              'assets/import_rect.png',
+                            )),
+                      ));
                 }
                 return InkWell(
-                  onTap: () async {
-                    final AvatarDetailHomeArgs args =
-                        AvatarDetailHomeArgs(avatarList[index]);
-                    initialAvatar = await Navigator.of(context)
-                        .pushNamed('/avatar_detail', arguments: args) as Avatar;
+                    onTap: () async {
+                      selectedAvatar = avatarList[index];
+                      Navigator.of(context).pop();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: Image.memory(
+                              File('$localFilePath/${avatarList[index].activeImagePath}')
+                                  .readAsBytesSync(),
+                            ),
+                          ),
+                          if (selectedAvatar.id == avatarList[index].id)
+                            const Align(
+                                alignment: Alignment.topRight,
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.only(right: 10.0, top: 10),
+                                  child: Icon(Icons.star,
+                                      color: Colors.yellow, size: 30),
+                                ))
+                          else
+                            Container(),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: InkWell(
+                              onTap: () async {
+                                final AvatarDetailHomeArgs args =
+                                    AvatarDetailHomeArgs(avatarList[index]);
+                                await Navigator.of(context).pushNamed(
+                                    '/avatar_detail',
+                                    arguments: args);
 
-                    await getItems();
-                    debugPrint('${initialAvatar.name}!!');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Image.memory(
-                      File('$localFilePath/${avatarList[index].activeImagePath}')
-                          .readAsBytesSync(),
-                      height: 100.0,
-                      width: 100.0,
-                    ),
-                  ),
-                );
+                                await getItems();
+                                debugPrint('${selectedAvatar.name}!!');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 15, right: 5.0),
+                                child: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: Image.asset(
+                                      'assets/avatar_edit.png',
+                                      fit: BoxFit.contain,
+                                    )),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
               },
               childCount: avatarList.length + 1,
             ),

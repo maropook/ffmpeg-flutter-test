@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
+import 'package:ffmpeg_flutter_test/main.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -153,10 +155,23 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
           'CREATE TABLE IF NOT EXISTS ${Constants().tableName} (id INTEGER PRIMARY KEY, activeImagePath TEXT, stopImagePath TEXT, name TEXT)');
     });
 
+    late int id;
+
     await db.transaction((Transaction txn) async {
-      final int id = await txn.rawInsert(query);
+      id = await txn.rawInsert(query);
       debugPrint('保存成功 id: $id');
     });
+
+    List<Object?>? result =
+        await db.query('avatar', where: 'id = ?', whereArgs: [id]);
+
+    Map<String, dynamic> item = result[0] as Map<String, dynamic>;
+
+    selectedAvatar = Avatar(
+        activeImagePath: item['activeImagePath']! as String,
+        id: item['id']! as int,
+        stopImagePath: item['stopImagePath']! as String,
+        name: item['name']! as String);
 
     setState(() {
       resetData();
