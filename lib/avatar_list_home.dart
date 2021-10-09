@@ -102,20 +102,69 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 if (index == avatarList.length) {
                   return InkWell(
                       onTap: () async {
-                        await Navigator.of(context).pushNamed('/avatar_import');
-
-                        getItems();
+                        showGeneralDialog(
+                          barrierColor: Colors.black.withOpacity(0.3),
+                          context: context,
+                          pageBuilder: (context, animation1, animation2) {
+                            return Material(
+                              color: Colors.black.withOpacity(0.3),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: Image.asset(
+                                      'assets/make.png',
+                                      width: MediaQuery.of(context).size.width *
+                                          0.7,
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              0.7,
+                                    ),
+                                  ),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text('または',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30)),
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            await Navigator.of(context)
+                                                .pushNamed('/avatar_import');
+                                            getItems();
+                                          },
+                                          child: Image.asset(
+                                            'assets/import.png',
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.30,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.30,
+                                          ),
+                                        ),
+                                      ]),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 5.0, right: 5.0),
-                        child: Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Image.asset(
-                              'assets/import_rect.png',
-                            )),
-                      ));
+                          padding: const EdgeInsets.all(5),
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Icon(Icons.add,
+                                  color: Colors.black, size: 40))));
                 }
                 return InkWell(
                     onTap: () async {
@@ -123,7 +172,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                       Navigator.of(context).pop();
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Stack(
                         children: [
                           Container(
@@ -155,9 +204,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                                 await Navigator.of(context).pushNamed(
                                     '/avatar_detail',
                                     arguments: args);
-
                                 await getItems();
-                                debugPrint('${selectedAvatar.name}!!');
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(
