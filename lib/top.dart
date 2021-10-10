@@ -16,6 +16,7 @@ import 'package:ffmpeg_flutter_test/ffmpeg/video_tab.dart';
 import 'package:ffmpeg_flutter_test/ffmpeg/video_util.dart';
 import 'package:ffmpeg_flutter_test/file_service.dart';
 import 'package:ffmpeg_flutter_test/main.dart';
+import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:ffmpeg_flutter_test/top.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,10 +34,14 @@ class TopPages extends StatefulWidget {
 class TopPagesState extends State<TopPages> {
   @override
   void initState() {
+    _routeAvatar = initialAvatar;
+    args = AvatarListHomeArgs(_routeAvatar);
+
     super.initState();
-    debugPrint('${selectedAvatar.name}');
   }
 
+  late Avatar _routeAvatar;
+  late AvatarListHomeArgs args;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,16 +50,19 @@ class TopPagesState extends State<TopPages> {
         ),
         body: Center(
             child: Column(children: [
-          Text('${selectedAvatar.name}'),
+          Text('${_routeAvatar.name}'),
           ElevatedButton(
             child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
             onPressed: () async {
-              await Navigator.push<dynamic>(
-                  context,
-                  MaterialPageRoute<dynamic>(
-                      builder: (context) => const AvatarListHomeWidget()));
+              args = AvatarListHomeArgs(_routeAvatar);
+
+              _routeAvatar = await Navigator.of(context)
+                  .pushNamed('/avatar_list', arguments: args) as Avatar;
+
               setState(() {
-                debugPrint('${selectedAvatar.name}');
+                if (_routeAvatar != null) {
+                  debugPrint('${_routeAvatar.name}!!!!!!!!!!!!!!!!!');
+                }
               });
             },
           ),
@@ -72,16 +80,15 @@ class Top extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text('${selectedAvatar.name}'),
-            ElevatedButton(
-              child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
-              onPressed: () {
-                Navigator.push<dynamic>(
-                    context,
-                    MaterialPageRoute<dynamic>(
-                        builder: (context) => const AvatarListHomeWidget()));
-              },
-            ),
+            // ElevatedButton(
+            //   child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
+            //   onPressed: () {
+            //     Navigator.push<dynamic>(
+            //         context,
+            //         MaterialPageRoute<dynamic>(
+            //             builder: (context) => const AvatarListHomeWidget()));
+            //   },
+            // ),
 
             // ElevatedButton(
             //   child: Text('Avatar'), //localのdjangoで作ったapiと通信する

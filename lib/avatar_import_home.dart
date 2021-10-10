@@ -171,11 +171,11 @@ class AvatarImportHomeWidgetState extends State<AvatarImportHomeWidget> {
 
     Map<String, dynamic> item = result[0] as Map<String, dynamic>;
 
-    selectedAvatar = Avatar(
-        activeImagePath: item['activeImagePath']! as String,
-        id: item['id']! as int,
-        stopImagePath: item['stopImagePath']! as String,
-        name: item['name']! as String);
+    // = Avatar(
+    //     activeImagePath: item['activeImagePath']! as String,
+    //     id: item['id']! as int,
+    //     stopImagePath: item['stopImagePath']! as String,
+    //     name: item['name']! as String);
 
     setState(() {
       resetData();

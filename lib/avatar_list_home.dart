@@ -11,8 +11,11 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AvatarListHomeWidget extends StatefulWidget {
-  const AvatarListHomeWidget({Key? key}) : super(key: key);
+  AvatarListHomeWidget(AvatarListHomeArgs args, {Key? key}) : super(key: key) {
+    avatar = args.avatar;
+  }
 
+  late final Avatar avatar;
   @override
   AvatarListHomeWidgetState createState() => AvatarListHomeWidgetState();
 }
@@ -20,9 +23,11 @@ class AvatarListHomeWidget extends StatefulWidget {
 class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
   final List<Avatar> avatarList = <Avatar>[];
   late String localFilePath;
+  late Avatar _routeAvatar;
 
   @override
   void initState() {
+    _routeAvatar = widget.avatar;
     super.initState();
     getItems();
   }
@@ -142,7 +147,8 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                                           InkWell(
                                             onTap: () async {
                                               await _getAndSaveActiveImageFromDevice();
-                                              Navigator.pop(context);
+                                              Navigator.pop(
+                                                  context, _routeAvatar);
                                             },
                                             child: Image.asset(
                                               'assets/import.png',
@@ -176,8 +182,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                 }
                 return InkWell(
                     onTap: () async {
-                      selectedAvatar = avatarList[index];
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(avatarList[index]);
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -192,7 +197,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                                   .readAsBytesSync(),
                             ),
                           ),
-                          if (selectedAvatar.id == avatarList[index].id)
+                          if (_routeAvatar.id == avatarList[index].id)
                             const Align(
                                 alignment: Alignment.topRight,
                                 child: Padding(
@@ -209,9 +214,9 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                               onTap: () async {
                                 final AvatarDetailHomeArgs args =
                                     AvatarDetailHomeArgs(avatarList[index]);
-                                await Navigator.of(context).pushNamed(
-                                    '/avatar_detail',
-                                    arguments: args);
+                                _routeAvatar = await Navigator.of(context)
+                                    .pushNamed('/avatar_detail',
+                                        arguments: args) as Avatar;
                                 await getItems();
                               },
                               child: Padding(
@@ -283,7 +288,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
 
     Map<String, dynamic> item = result[0] as Map<String, dynamic>;
 
-    selectedAvatar = Avatar(
+    _routeAvatar = Avatar(
         activeImagePath: item['activeImagePath']! as String,
         id: item['id']! as int,
         stopImagePath: item['stopImagePath']! as String,

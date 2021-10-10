@@ -5,3 +5,9 @@ class AvatarDetailHomeArgs {
 
   final Avatar avatar;
 }
+
+class AvatarListHomeArgs {
+  AvatarListHomeArgs(this.avatar);
+
+  final Avatar avatar;
+}

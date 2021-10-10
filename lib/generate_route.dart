@@ -1,5 +1,6 @@
 import 'package:ffmpeg_flutter_test/avatar_detail_home.dart';
 import 'package:ffmpeg_flutter_test/avatar_import_home.dart';
+import 'package:ffmpeg_flutter_test/avatar_list_home.dart';
 import 'package:ffmpeg_flutter_test/route_args.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,12 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
     case '/avatar_import':
       return MaterialPageRoute<dynamic>(builder: (BuildContext context) {
         return const AvatarImportHomeWidget();
+      });
+
+    case '/avatar_list':
+      final AvatarListHomeArgs args = settings.arguments! as AvatarListHomeArgs;
+      return MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+        return AvatarListHomeWidget(args);
       });
   }
 }

@@ -62,18 +62,12 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
         id: item['id']! as int,
         stopImagePath: item['stopImagePath']! as String,
         name: item['name']! as String);
-
-    selectedAvatar = _avatar;
-
     debugPrint('${result[0]}');
   }
 
   Future<void> _deleteData(int id) async {
     final Database db = await _avatarDBService.getDatabase();
-    if (selectedAvatar.id == id) {
-      _avatar = initialAvatar;
-      selectedAvatar = initialAvatar;
-    }
+    _avatar = initialAvatar;
 
     await db.delete(
       Constants().tableName,
@@ -91,7 +85,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
               IconButton(
                 onPressed: () async {
                   await _deleteData(_avatar.id);
-                  Navigator.pop(context);
+                  Navigator.pop(context, _avatar);
                 },
                 icon: const Icon(Icons.delete),
               ),
@@ -99,8 +93,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
             leading: IconButton(
                 onPressed: () async {
                   await _updateData();
-                  Navigator.of(context).pop(_avatar);
-                  // Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.pop(context, _avatar);
                 },
                 icon: const Icon(
                   Icons.arrow_back_ios,

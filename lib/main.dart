@@ -10,14 +10,12 @@ import 'package:path_provider/path_provider.dart';
 import 'Camera/camera_example_home.dart';
 
 late Avatar initialAvatar;
-late Avatar selectedAvatar;
 Future<void> main() async {
   // Fetch the available cameras before initializing the app.
   try {
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
-    initialAvatar = await selectedAvatarCreate();
-    selectedAvatar = await selectedAvatarCreate();
+    initialAvatar = await initialAvatarCreate();
   } on CameraException catch (e) {
     logError(e.code, e.description);
   }
