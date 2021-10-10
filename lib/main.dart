@@ -31,11 +31,11 @@ class MyApp extends StatelessWidget {
       title: '色々',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.grey,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => Top(),
+        '/': (BuildContext context) => TopPages(),
       },
       onGenerateRoute: generateRoute,
     );

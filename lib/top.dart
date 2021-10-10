@@ -8,6 +8,7 @@ import 'package:ffmpeg_flutter_test/TextOutput/text_output.dart';
 import 'package:ffmpeg_flutter_test/Video/video_app.dart';
 import 'package:ffmpeg_flutter_test/Video/video_get.dart';
 import 'package:ffmpeg_flutter_test/VoiceRecoder/recorder_home_view.dart';
+import 'package:ffmpeg_flutter_test/avatar.dart';
 import 'package:ffmpeg_flutter_test/file_avatar.dart';
 import 'package:ffmpeg_flutter_test/avatar_list_home.dart';
 import 'package:ffmpeg_flutter_test/db.dart';
@@ -21,6 +22,45 @@ import 'package:path_provider/path_provider.dart';
 import 'Camera/camera_example_home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+class TopPages extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return TopPagesState();
+  }
+}
+
+class TopPagesState extends State<TopPages> {
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('${selectedAvatar.name}');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('一覧'),
+        ),
+        body: Center(
+            child: Column(children: [
+          Text('${selectedAvatar.name}'),
+          ElevatedButton(
+            child: Text('Avatar保存'), //localのdjangoで作ったapiと通信する
+            onPressed: () async {
+              await Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                      builder: (context) => const AvatarListHomeWidget()));
+              setState(() {
+                debugPrint('${selectedAvatar.name}');
+              });
+            },
+          ),
+        ])));
+  }
+}
 
 class Top extends StatelessWidget {
   @override

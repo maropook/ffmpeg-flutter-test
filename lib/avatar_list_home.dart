@@ -69,25 +69,22 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            "アバターを選ぶ",
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.white),
       backgroundColor: Colors.black,
       body: CustomScrollView(
         slivers: <Widget>[
           SliverList(
               delegate: SliverChildListDelegate(<Widget>[
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(13.0),
-                child: Text(
-                  'アバターを選ぶ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 30),
-                ),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(10)),
+            Padding(padding: EdgeInsets.all(4)),
           ])),
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -105,53 +102,63 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                           pageBuilder: (context, animation1, animation2) {
                             return Material(
                               color: Colors.black.withOpacity(0.3),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Center(
-                                    child: Image.asset(
-                                      'assets/make.png',
-                                      width: MediaQuery.of(context).size.width *
-                                          0.7,
-                                      height:
-                                          MediaQuery.of(context).size.width *
-                                              0.7,
+                              child: Scaffold(
+                                appBar: AppBar(
+                                    automaticallyImplyLeading: false,
+                                    title: Text(
+                                      "アバターを新規追加",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Text('または',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 30)),
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            await _getAndSaveActiveImageFromDevice();
-                                            await _saveData();
-                                            Navigator.pop(context);
-                                            // Navigator.popUntil(
-                                            //     context, (_) => count++ >= 2);
-                                            //     .pushNamed('/avatar_import');
-                                          },
-                                          child: Image.asset(
-                                            'assets/import.png',
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.30,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.30,
+                                    backgroundColor: Colors.white),
+                                backgroundColor: Colors.black.withOpacity(0.3),
+                                body: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Center(
+                                      child: Image.asset(
+                                        'assets/make.png',
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                      ),
+                                    ),
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text('または',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 30)),
                                           ),
-                                        ),
-                                      ]),
-                                ],
+                                          InkWell(
+                                            onTap: () async {
+                                              await _getAndSaveActiveImageFromDevice();
+                                              Navigator.pop(context);
+                                            },
+                                            child: Image.asset(
+                                              'assets/import.png',
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.30,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.30,
+                                            ),
+                                          ),
+                                        ]),
+                                  ],
+                                ),
                               ),
                             );
                           },
@@ -209,7 +216,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(
-                                    bottom: 15, right: 5.0),
+                                    bottom: 5, right: 5.0),
                                 child: SizedBox(
                                     width: 50,
                                     height: 50,
@@ -239,6 +246,7 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
     activeImageName = '${now()}active.png';
     await File('$localFilePath/$activeImageName')
         .writeAsBytes(await image.readAsBytes());
+    await _saveData();
   }
 
   Future<void> _getAndSaveActiveImageFromDevice() async {
