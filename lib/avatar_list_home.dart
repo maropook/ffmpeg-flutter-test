@@ -213,7 +213,8 @@ class AvatarListHomeWidgetState extends State<AvatarListHomeWidget> {
                             child: InkWell(
                               onTap: () async {
                                 final AvatarDetailHomeArgs args =
-                                    AvatarDetailHomeArgs(avatarList[index]);
+                                    AvatarDetailHomeArgs(
+                                        avatarList[index], _routeAvatar);
                                 _routeAvatar = await Navigator.of(context)
                                     .pushNamed('/avatar_detail',
                                         arguments: args) as Avatar;

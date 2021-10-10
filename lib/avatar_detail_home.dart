@@ -12,9 +12,11 @@ class AvatarDetailHomeWidget extends StatefulWidget {
   AvatarDetailHomeWidget(AvatarDetailHomeArgs args, {Key? key})
       : super(key: key) {
     avatar = args.avatar;
+    selectedAvatar = args.selectedAvatar;
   }
 
   late final Avatar avatar;
+  late final Avatar selectedAvatar;
 
   @override
   AvatarDetailHomeWidgetState createState() => AvatarDetailHomeWidgetState();
@@ -23,6 +25,7 @@ class AvatarDetailHomeWidget extends StatefulWidget {
 class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   AvatarDetailHomeWidgetState();
   late Avatar _avatar;
+  late Avatar _selectedAvatar;
   final TextEditingController avatarName = TextEditingController();
   String? localFilePath;
   late AvatarDBService _avatarDBService;
@@ -31,6 +34,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
   initState() {
     avatarName.text = widget.avatar.name;
     _avatar = widget.avatar;
+    _selectedAvatar = widget.selectedAvatar;
     _avatarDBService = AvatarDBService();
     super.initState();
     getlocalFilePath();
@@ -65,14 +69,18 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     debugPrint('${result[0]}');
   }
 
-  Future<void> _deleteData(int id) async {
+  Future<void> _deleteData() async {
     final Database db = await _avatarDBService.getDatabase();
-    _avatar = initialAvatar;
+    _avatar = _selectedAvatar;
+
+    if (_selectedAvatar == _avatar) {
+      _avatar = initialAvatar;
+    }
 
     await db.delete(
       Constants().tableName,
       where: 'id = ?',
-      whereArgs: <int>[id],
+      whereArgs: <int>[_avatar.id],
     );
   }
 
@@ -84,7 +92,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
             actions: [
               IconButton(
                 onPressed: () async {
-                  await _deleteData(_avatar.id);
+                  await _deleteData();
                   Navigator.pop(context, _avatar);
                 },
                 icon: const Icon(Icons.delete),
