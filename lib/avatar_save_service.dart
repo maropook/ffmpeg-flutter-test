@@ -1,14 +1,10 @@
 import 'dart:io';
 
 import 'package:ffmpeg_flutter_test/avatar.dart';
+import 'package:ffmpeg_flutter_test/text_file.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-
-Future<String> get localPath async {
-  final Directory directory = await getApplicationDocumentsDirectory();
-  return directory.path;
-}
 
 class Constants {
   final String dbName = 'sqflite.db';
@@ -37,18 +33,18 @@ class AvatarInitial {
 
     return assetName;
   }
-}
 
-Future<Avatar> initialAvatarCreate() async {
-  String activeImagePath =
-      await AvatarInitial.assetToFile(AvatarInitial.initialActiveAvatar);
-  String stopImagePath =
-      await AvatarInitial.assetToFile(AvatarInitial.initialStopAvatar);
-  Avatar avatar = Avatar(
-      activeImagePath: AvatarInitial.initialActiveAvatar,
-      stopImagePath: AvatarInitial.initialStopAvatar,
-      name: '初期アバター',
-      id: 1);
+  static Future<Avatar> initialAvatarCreate() async {
+    String activeImagePath =
+        await AvatarInitial.assetToFile(AvatarInitial.initialActiveAvatar);
+    String stopImagePath =
+        await AvatarInitial.assetToFile(AvatarInitial.initialStopAvatar);
+    Avatar avatar = Avatar(
+        activeImagePath: AvatarInitial.initialActiveAvatar,
+        stopImagePath: AvatarInitial.initialStopAvatar,
+        name: '初期アバター',
+        id: 1);
 
-  return avatar;
+    return avatar;
+  }
 }

@@ -5,6 +5,7 @@ import 'package:ffmpeg_flutter_test/avatar_db_service.dart';
 import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
 import 'package:ffmpeg_flutter_test/main.dart';
 import 'package:ffmpeg_flutter_test/route_args.dart';
+import 'package:ffmpeg_flutter_test/text_file.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -37,6 +38,7 @@ class AvatarDetailHomeWidgetState extends State<AvatarDetailHomeWidget> {
     _selectedAvatar = widget.selectedAvatar;
     _avatarDBService = AvatarDBService();
     super.initState();
+
     getlocalFilePath();
   }
 

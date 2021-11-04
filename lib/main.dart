@@ -12,13 +12,13 @@ import 'Camera/camera_example_home.dart';
 late Avatar initialAvatar;
 Future<void> main() async {
   // Fetch the available cameras before initializing the app.
-  try {
-    WidgetsFlutterBinding.ensureInitialized();
-    cameras = await availableCameras();
-    initialAvatar = await initialAvatarCreate();
-  } on CameraException catch (e) {
-    logError(e.code, e.description);
-  }
+  // try {
+  //   WidgetsFlutterBinding.ensureInitialized();
+  //   cameras = await availableCameras();
+  //   initialAvatar = await AvatarInitial.initialAvatarCreate();
+  // } on CameraException catch (e) {
+  //   logError(e.code, e.description);
+  // }
   runApp(MyApp());
 }
 
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => TopPages(),
+        '/': (BuildContext context) => Top(),
       },
       onGenerateRoute: generateRoute,
     );
