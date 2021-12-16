@@ -233,3 +233,16 @@ debug.xconfig
 
 xcodeのプロジェクトの名前をユニークにし,teamに自分のappleIDを追加しておく
 
+
+post_install do |installer| installer.pods_project.targets.each do |target| flutter_additional_ios_build_settings(target) target.build_configurations.each do |config| config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.3' end end installer.pods_project.build_configurations.each do |config| config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64" end end
+
+pod install --repo-update
+
+xcodeでframeworkのiosのversionを9.3にしておく any simulator sdk をarm64にしておく
+
+release.xconfig #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig" #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"
+
+debug.xconfig #include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+
+xcodeのプロジェクトの名前をユニークにしておく
+
