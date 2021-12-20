@@ -1,29 +1,29 @@
 import 'package:flutter/cupertino.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookDetailStruct.dart';
-import 'package:ffmpeg_flutter_test/Avatar/json/BookStruct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_detail_struct.dart';
+import 'package:ffmpeg_flutter_test/Avatar/json/book_struct.dart';
 import 'package:ffmpeg_flutter_test/Avatar/models/add_book_model.dart';
 import 'package:ffmpeg_flutter_test/Avatar/models/logic.dart';
 import 'package:ffmpeg_flutter_test/Avatar/view/add_book_page.dart';
 import 'package:ffmpeg_flutter_test/Avatar/view/edit_book_page.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ApiTop extends StatelessWidget {
+  const ApiTop({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<BookModel>(
-        create: (context) => BookModel()..getBookList(),
+        create: (BuildContext context) => BookModel()..getBookList(),
         child: ChangeNotifierProvider<AddBookModel>(
             create: (_) => AddBookModel(),
             child: Consumer<BookModel>(
-                builder: (context, model, child) => Scaffold(
+                builder: (context, BookModel model, Widget? child) => Scaffold(
                     appBar: AppBar(
                       title: const Text('Avatar管理'),
                     ),
-                    body: Container(
-                      child: const BookLists(),
-                    ),
+                    body: const BookLists(),
                     floatingActionButton:
                         Consumer<BookModel>(builder: (context, model, child) {
                       return FloatingActionButton(
@@ -31,7 +31,8 @@ class ApiTop extends StatelessWidget {
                           final bool? added = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddBookPage(),
+                                builder: (BuildContext context) =>
+                                    AddBookPage(),
                                 fullscreenDialog: true,
                               ));
 
@@ -39,7 +40,7 @@ class ApiTop extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     backgroundColor: Colors.green,
-                                    content: Text("本を追加しました")));
+                                    content: Text('本を追加しました')));
                           }
                           model.getBookListDio();
                         },
@@ -54,7 +55,8 @@ class BookLists extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BookModel>(builder: (context, model, child) {
+    return Consumer<BookModel>(
+        builder: (BuildContext context, BookModel model, Widget? child) {
       final BookStruct? bookse = model.books;
 
       if (bookse == null) {
@@ -65,7 +67,7 @@ class BookLists extends StatelessWidget {
         width: double.infinity,
         child: ListView.builder(
           itemCount: bookse.count,
-          itemBuilder: (context, index) {
+          itemBuilder: (BuildContext context, int index) {
             return Slidable(
               actionPane: const SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
@@ -85,14 +87,15 @@ class BookLists extends StatelessWidget {
                     final String? title = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditBookPage(BookDetailStruct(
-                            bookId: bookse.results[index].bookId,
-                            title: bookse.results[index].title,
-                            titleKana: bookse.results[index].titleKana,
-                            author: bookse.results[index].author,
-                            authorKana: bookse.results[index].authorKana,
-                            isbn: bookse.results[index].isbn,
-                            salesDate: bookse.results[index].salesDate)),
+                        builder: (BuildContext context) => EditBookPage(
+                            BookDetailStruct(
+                                bookId: bookse.results[index].bookId,
+                                title: bookse.results[index].title,
+                                titleKana: bookse.results[index].titleKana,
+                                author: bookse.results[index].author,
+                                authorKana: bookse.results[index].authorKana,
+                                isbn: bookse.results[index].isbn,
+                                salesDate: bookse.results[index].salesDate)),
                       ),
                     );
                     model.getBookListDio();
@@ -124,7 +127,7 @@ class BookLists extends StatelessWidget {
     });
   }
 
-  Future showConfirmDialog(
+  Future<void> showConfirmDialog(
     BuildContext context,
     BookDetailStruct book,
     BookModel model,
@@ -134,22 +137,22 @@ class BookLists extends StatelessWidget {
       barrierDismissible: false,
       builder: (_) {
         return AlertDialog(
-          title: const Text("削除の確認"),
-          content: Text("[${book.title}]を削除しますか"),
-          actions: [
+          title: const Text('削除の確認'),
+          content: Text('[${book.title}]を削除しますか'),
+          actions: <Widget>[
             TextButton(
-              child: const Text("いいえ"),
+              child: const Text('いいえ'),
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: const Text("はい"),
+              child: const Text('はい'),
               onPressed: () {
                 model.deleteBookDio(book.bookId);
                 Navigator.pop(context);
                 model.getBookListDio();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
-                    content: Text("${book.title}を削除しました")));
+                    content: Text('${book.title}を削除しました')));
               },
             ),
           ],

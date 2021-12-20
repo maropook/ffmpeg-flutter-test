@@ -18,8 +18,10 @@ class BookStruct {
     previous = json['previous'] as Null;
     if (json['results'] != null) {
       results = <Results>[];
-      json['results'].forEach((v) {
-        results.add(new Results.fromJson(v));
+      json['results'].forEach((dynamic v) {
+        results.add(new Results.fromJson(
+          v as Map<String, dynamic>,
+        ));
       });
     }
   }
