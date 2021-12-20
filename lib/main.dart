@@ -1,9 +1,6 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:ffmpeg_flutter_test/avatar.dart';
-import 'package:ffmpeg_flutter_test/avatar_list_home.dart';
-import 'package:ffmpeg_flutter_test/avatar_save_service.dart';
-import 'package:ffmpeg_flutter_test/generate_route.dart';
 import 'package:ffmpeg_flutter_test/top.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,7 +32,6 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => Top(),
       },
-      onGenerateRoute: generateRoute,
     );
   }
 }
